@@ -54,3 +54,5 @@ for i in $(cat pods); do
 done
 
 
+# ## sh node_status.sh :: 
+read -p "Enter OCP node-ip:" host && kubectl get nodes | grep node-$host
