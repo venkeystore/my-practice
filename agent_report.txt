@@ -1,0 +1,53 @@
+
+
+	Arlington, TX, 
+	Burlington DIT, 
+	Irving, TX, 
+	Omaha, NE, 
+	
+	https://dcconnect-Omaha.verizon.com/
+	
+	
+
+
+
+Regular monitoring
+
+Agent report should be run for all DCs:
+Nessus agent - Count
+(CrowdStrike)Falcon Sensor -count
+Satellite Subscription
+
+Nessus agent - Count: 
+====================
+source bashrc
+ansible -o -m shell -a 'sudo /opt/nessus_agent/sbin/nessuscli agent status | grep "Link status"' k8s | wc -l
+source bashrc
+ansible -o -m shell -a 'sudo /opt/nessus_agent/sbin/nessuscli agent status | grep "Link status"' k8s  | grep -i SUCCESS  | wc -l
+source bashrc
+ansible -o -m shell -a 'sudo /opt/nessus_agent/sbin/nessuscli agent status | grep "Link status"' k8s  | grep -i UNREACHABLE! | wc -l
+source bashrc
+ansible -o -m shell -a 'sudo /opt/nessus_agent/sbin/nessuscli agent status | grep "Link status"' k8s  | grep -i FAILED | wc -l
+
+(CrowdStrike)Falcon Sensor -count:
+=================================
+ansible -m shell -a 'systemctl | grep CrowdStrike' k8s | grep SUCCESS | wc -l
+ansible -m shell -a 'systemctl | grep CrowdStrike' k8s | grep UNREACHABLE | wc -l
+ansible -m shell -a 'systemctl | grep CrowdStrike' k8s | grep FAILED | wc -l
+
+Satellite Subscription:
+=======================
+ansible -m shell -a 'systemctl | grep Gofer' k8s | grep SUCCESS | wc -l
+ansible -m shell -a 'systemctl | grep Gofer' k8s | grep UNREACHABLE | wc -l
+ansible -m shell -a 'systemctl | grep Gofer' k8s | grep FAILED  | wc -l
+
+
+
+Agent report
+Perryman: done
+Twinsburg: done 
+Omaha: Swastik is working on
+Arlington: IP
+Magellan: done
+
+

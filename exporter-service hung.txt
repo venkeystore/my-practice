@@ -1,0 +1,10 @@
+
+mail: exporter service hung:
+----------------------------
+
+[montana@node-001e679c0a74 ~]$ journalctl -fu mon-prometheus-node-exporter.service
+-- Logs begin at Tue 2020-12-29 17:35:59 UTC. --
+
+[montana@node-001e679c0a74 ~]$ sudo systemctl restart mon-prometheus-node-exporter.service
+[montana@node-001e679c0a74 ~]$ systemctl status mon-prometheus-node-exporter.service
+● mon-prometheus-node-exporter.service

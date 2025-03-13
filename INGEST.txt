@@ -1,0 +1,48 @@
+STG2 Hourly Report for ingest and vzcloud health::
+Hello VDSI,
+
+As I have mentioned in our daily calls( Only swastik was there and I forwarded him sample emails to monitor), please do start monitoring Ingest and health reports for rocklin stg2,  see below for sample subjects you can look for. Ingest needs to be at least 0.6 TB ( look at the below picture at second column "SAL Ingest") all the time, if it is going down below that, you should investigate and let us know the reasons or you can scale up the ingest containers so that it can reach up to 0.6 TB 
+
+image.png
+
+Example subject names of your references.
+STG2 Hourly Report 2021-01-15:13   -  ingest
+STG2 Rocklin 2021-01-15 Vzcloud Health Report -  http status codes, 
+
+
+Ingest container logs location:
+Login to ingest container and goto this path: /tmp/logs/
+Based on the errors in ingest logs you can look for logs in dv to find the issue.
+
+Ping me if you have any questions.
+
+--
+
+
+Hi Team,
+
+Raised by Application team:
+-------------------------------------------------------------------------
+Arl: OSB MM Cass Seed node - 10.9.11.1 down  - VCOSO-2704   -
+
+Some cordoned the node. I uncordon the node and the the cass was up&running
+--------------------------------------------------------------------------------
+Arl: OSB MM Cass node down 10.16.19.1 - VCOSO-2703 -
+
+observing i/o error:
+-----------------------------------------------------------------------------
+
+
+Raised by platform team:
+----------------------------------------------------------------------------
+Twinsburg:  node 10.6.102.1/ 10.6.101.1 unreachable (DC11_SSDMM) - VCOSO-2705
+
+both the ipmi's are unreachable.
+could you please check with the dc folks for an reset:
+
+
+
+
+About Magellan Pxe- nodes
+
+

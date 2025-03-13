@@ -1,0 +1,73 @@
+source-address:
+10.1.34.1
+10.212.5.1
+10.158.34.1
+10.69.34.1
+10.12.65.1
+10.200.165.1
+10.100.32.1
+10.66.1.1
+10.200.1.1
+10.66.1.1
+10.31.65.1
+10.100.33.1
+10.69.33.1
+10.64.33.1
+10.161.33.1
+10.6.33.1
+10.212.33.1
+10.136.33.1
+10.13.66.1
+10.75.100.49
+ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.228.9.1 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@68.128.204.1
+ ssh -i ~/.ssh/id_rsa -o ProxyCommand="ssh -W %h:%p malikra@perrymandc-lkjump.verizon.com" montana@10.13.66.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.6.33.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.24.15.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.99.9.1
+ cd ~/.ssh/
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.29.90.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.7.89.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.3.19.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.11.11.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.199.9.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.198.23.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.203.41.1
+ history
+ ssh -i ~/.ssh/id_rsa -o ProxyCommand="ssh -W %h:%p malikra@perrymandc-lkjump.verizon.com" montana@10.86.24.1
+ ssh -i ~/.ssh/id_rsa -o ProxyCommand="ssh -W %h:%p malikra@perrymandc-lkjump.verizon.com" montana@10.147.17.1 last reboot
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.147.17.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.147.17.1 uptime
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.147.17.1
+  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p malikra@140.223.0.67" montana@10.27.75.1

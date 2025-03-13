@@ -1,0 +1,12 @@
+#docker run -it --rm -v 'pwd':/work -e
+	login with vzid&pass
+
+#kubectl config use-context rocklin
+   switched to context 'rocklin' 
+# kubectl get nodes
+
+
+
+
+
+ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.0.67" montana@10.24.15.1

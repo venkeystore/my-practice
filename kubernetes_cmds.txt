@@ -1,0 +1,20 @@
+1). 
+# kubectl top nodes
+	My output is as follows.
+	-----------------------
+	NAME               CPU(cores) CPU% MEMORY(bytes) MEMORY%
+	docker-for-desktop 248m       12%  1208Mi        63%
+	
+
+2). Memory consumption of pods running in kube-system
+# kubectl -n kube-system top pod
+	The output (on Docker For Desktop) is as follows.
+    -------------------------------------------------
+	NAME                                       CPU(cores) MEMORY(bytes)
+	etcd-docker-for-desktop                    16m        74Mi
+	kube-apiserver-docker-for-desktop          33m        427Mi
+	kube-controller-manager-docker-for-desktop 44m        63Mi
+	kube-dns-86f4d74b45-c47nh                  1m         39Mi
+	kube-proxy-r56kd                           2m         22Mi
+	kube-scheduler-docker-for-desktop          13m        23Mi
+

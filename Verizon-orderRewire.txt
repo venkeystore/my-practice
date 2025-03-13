@@ -1,0 +1,88 @@
+I have total 7.5 years of experience and  I've been working for verizon almost 5 years of experience in
+Implimentation of devops in the feelds of automation software configuration management cloud services and monitoring
+
+I have used many technical tools throughout my professional journey
+|-----------------------------------------------|--------------------------|
+| Category                                      | Tool/Technology          |
+|-----------------------------------------------|--------------------------|
+| Source Code Management (SCM)                  | Git & GitHub             |
+| Build Automation                              | Apache Maven             |
+| CI/CD                                         | Jenkins                  |
+| Code Quality Analysis                         | SonarQube                |
+| Automation Configuration Management           | Ansible                  |
+| Scripting                                     | Bash                     |
+| Orchestration & Containerization              | Kubernetes & Docker      |
+| Monitoring                                    | Prometheus & Grafana     |
+| Ticketing Tool                                | Jira                     |
+| Documentation                                 | Confluence               |
+| Cloud Services                                | AWS EC2                  |
+----------------------------------------------------------------------------
+
+These all about when it comes to say tool aspect and technical aspect
+
+
+
+Coming to the project: VZ-cloud
+---------------------------------------------------
+We were actively involved in the VZ-cloud project is Monitoring
+                                 ````````
+We operate five data centers, diligently monitoring each one. Each data center is having with 300 + nodes.
+All nodes are hosting kube components, including hardware and network components the base platform is OCP
+-------------|
+Arlington    |
+Twinsburg    |
+Omaha        |
+Perryman     |
+Magellan     |
+-------------|
+
+
+Coming to the project: Verizon Order Rewire project
+---------------------------------------------------
+where we operate builds&deployments
+We were actively involved in the Verizon Order Rewire project 
+                                 ````````````````````````````
+It contains four application like DVS PRE RDS and PNO ; To that we have phases DEV STG TEST and PROD 
+__________________________________
+|DVS - destributed version system| 
+|PRE - Pricing eliments          |
+|RDS - Rational Database         |
+|PNO -                           |
+----------------------------------
+
+
+Here DEV development team only tacking care and PROD also has seperate team.
+So, we are supporting for  the remaing STG and TEST Phases. So, againg STG contains 4 environments like STG1,2,3,4
+likewise TEST also
+ 
+
+where I'm playing builds&deployments and monitoring. 
+To that we've 3 Deployment windows insisted
+At about 08:00AM we will validate code in STG phases
+At about 11:00PM we will deploy the validation code in 8AM STG at 11:00PM in TEST
+At about 01:00AM we will triger for backup 
+
+
+Devops work flow: 
+Developers develop the code keep in the github, Jenkins automatically accumulate the changes from github 
+and then generate the artifact 
+and that artifact deploy into various Environments such as Dev QA UAT STAGING and as well as Nexus / JfrogArtifactory
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

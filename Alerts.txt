@@ -1,0 +1,31 @@
+nodelevel:
+==========
+KubeNodeUnreachable
+KubeNodeNotReady
+NodeMissingFromK8s
+NodeCordoned
+Ready
+NodeNetworkInterfaceFlap
+NodeNetworkBondingDegrad
+NodeFilesystemAlmostOutO
+KubeNodeReadinessFlappin
+KubeletHealthState
+NorthboundStale
+Kube workloads:
+==============
+KubeContainerWaiting
+KubeDeploymentReplicasMi
+KubeJobCompletion
+KubeJobFailed
+NodeHasIntegrityFailure
+KubeStatefulSetUpdateNot
+KubeStatefulSetReplicasM
+KubePersistentVolumeFill
+KubePodNotReady
+KubePodCrashLooping
+Cluster level:
+=============
+NodePendingCSR
+TargetDown
+ClusterOperatorDegraded
+ClusterOperatorDown

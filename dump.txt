@@ -1,0 +1,24 @@
+sudo /usr/bin/bash -c "echo REGISTRY=k8s-docker.gr.svcs.verizon.com >/root/.toolboxrc; echo TOOLBOX_NAME=toolbox-mukkve7 >>/root/.toolboxrc; echo IMAGE=rhel8/support-tools >>/root/.toolboxrc; /usr/bin/toolbox" 
+
+chroot /host
+podman login platform.er.svcs.verizon.com
+crictl ps | grep 313bcdc461fce
+crictl inspect -o json b60eac9f8b24b | jq -r '.info.runtimeSpec.linux.namespaces[] | select(.type=="network") | .path'
+
+podman run --rm -v /tmp:/tmp --privileged --net ns:/var/run/netns/4c2615a5-3474-4376-9ae7-80bb8190b391  platform.er.svcs.verizon.com/montana/mon-alpine-toolbox:3 tcpdump -w /tmp/internal.pcap -i eth0
+
+
+sh-4.4# cd /tmp/
+sh-4.4# chmod 777 internal.pcap 
+
+ssh mukkve7@140.223.55.130
+ 
+File copy from host to local:
+scp node-215-9.vcos.verizon.com:/tmp/215-9_internal.pcap . 
+
+
+node-10-166.vcos.verizon.com
+
+mv /tmp/internal.pcap /tmp/internal.pcap
+
+

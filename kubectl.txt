@@ -1,0 +1,57 @@
+openshift clusters
+
+To connect tennel: (https://confluence.verizon.com/display/VCOS/Firefox+auto-proxy+for+accessing+DC+internal+web+servers)
+ssh -D 3142 -Nf -o "ProxyCommand=ssh -W %h:%p perrymandc-lkjump.verizon.com" montana@10.134.30.1
+
+CLI:
+=====
+To access ocp2 using kubectl and k9s, log into the perryman jump host and run this command::::
+$ ssh mukkve7@perrymandc-lkjump
+$ oc login -u mukkve7 --server=https://api.ocp1.magellan.svcs.verizon.com:6443
+$ oc login -u mukkve7 --server=https://api.ocp2.magellan.svcs.verizon.com:6443
+
+UI:
+===
+https://console-openshift-console.apps.ocp1.magellan.svcs.verizon.com
+https://console-openshift-console.apps.ocp2.magellan.svcs.verizon.com
+
+
+k9s -n <namespace>
+kubectl get pods --namespace <namespace_name>
+
+
+Namespaces:
+==========
+Project: platform:
+-----------------
+metallb-system
+platform
+
+Project: storage
+----------------
+storage	
+	
+Project: System
+----------------
+cattle-gatekeeper-system
+cattle-logging-system
+cattle-monitoring-system
+cattle-system	
+fleet-system	
+kube-node-lease	
+kube-public
+kube-system
+security-scan	
+
+Project: vzcloud
+----------------
+Active
+vzcloud-arl-core
+vzcloud-dc11
+vzcloud-dc13
+
+Not in a Project:
+----------------
+cattle-dashboards	
+cis-operator-system	
+default		

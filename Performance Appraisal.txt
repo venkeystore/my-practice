@@ -1,0 +1,201 @@
+Objectives/Key Result Areas (KRA)
+(Max. 5 KRAs)
+Contribution to Revenue and Margins:
+1) Consistently managed my work hours effectively.
+2) Achieved and sustained 100% billing utilization.
+
+Delivery excellence: 
+1) Achieved 100% delivery of project deliverables without any escalations.
+2) Maintained the stability of all environments.
+
+Adherence to Procedures:
+1) I consistently communicate updates on my work and progress to my team members.
+2) I have documented both existing and new processes associated with routine tasks
+
+Learning and Professional Development:
+1) Swiftly acquired new skills when confronted with unfamiliar challenges.
+2) Enhanced my understanding of existing tools and scripting, applying this knowledge regularly in day-to-day business as usual activities.
+
+performance & behavioral:
+1) Demonstrates consistent collaboration with team members to achieve shared goals and tasks
+2) Interacts with all team members in a respectful, courteous, and professional manner
+3) Takes into account the perspectives of others, including different departments if applicable, when analyzing situations or formulating solutions
+
+
+
+
+Key Performance Indicators (KPI)
+====================================
+Attendance and Punctuality:
+Regular attendance and adherence to work schedules as an indicator of reliability and commitment.
+
+Initiative and Proactivity:
+Taking proactive steps to identify opportunities for improvement and acting independently when necessary.
+
+Problem-Solving:
+Ability to identify, analyze, and solve problems efficiently and effectively.
+
+Professional Development:
+Participation in training, acquiring new skills, and continuous learning relevant to the role.
+
+Quality of Work:
+Accuracy, precision, and the quality of deliverables or outputs produced by the employee.
+
+
+
+
+
+
+
+Performance Appraisal
+
+(25%):
+
+Contribution to Revenue:
+Objective: To contribute significantly to the organization's revenue.
+Accomplishments:
+Successfully managed and exceeded the assigned Service Points (SPs) capacity.
+Actively participated in revenue-generating activities.
+Collaborated with the team to explore workloads for business growth.
+
+
+
+
+"2024/1/30:
+test-accesser    4/5     5            4           5d8h
+Events:
+4s   Warning   Unhealthy   pod/test-accesser-8556ccdf65-tnr26   Readiness probe failed: Accesser readiness was
+pod/test-accesser-8556ccdf65-tnr26 -> clevos-accesser container is not running with the absence of authentication checking for the 'unix_http_server'
+test-accesser-8556ccdf65-tnr26     0/1     Running   0          6h56m   172.18.112.21   node-149-16.vcos.verizon.com   Ready 
+container logs:
+2024-01-29 22:06:31,936 INFO Included extra file ""/etc/supervisor/conf.d/supervisor.conf"" during parsing
+2024-01-29 22:06:31,940 INFO RPC interface 'supervisor' initialized
+2024-01-29 22:06:31,940 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2024-01-29 22:06:31,940 INFO supervisord started with pid 1
+2024-01-29 22:06:32,942 INFO spawned: 'appliance' with pid 85
+2024-01-29 22:06:32,944 INFO spawned: 'dsnet-core' with pid 86
+2024-01-29 22:06:32,945 INFO spawned: 'dsnet-md' with pid 87
+2024-01-29 22:06:33,979 INFO success: appliance entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-01-29 22:06:33,979 INFO success: dsnet-core entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-01-29 22:06:33,979 INFO success: dsnet-md entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)"
+
+
+
+
+
+magellan-ocp3	storage
+
+
+test-accesser
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Contribution to Revenue
+Exceeded Capacity Targets: 
+Successfully exceeded the set capacity targets, contributing positively to revenue goals.
+
+
+I take pride in my ability to consistently exceed the set capacity targets, showcasing not only my dedication but also making a significant positive impact on our revenue goals. By effectively managing workloads and optimizing processes, I have demonstrated my commitment to achieving and surpassing expectations. This accomplishment reflects my proactive approach and dedication to contributing to the success of the team and the organization as a whole
+-------------------------------------
+
+
+
+Delivery excellence: 
+Consistent On-Time Delivery:
+Achieved 100% delivery of project deliverables without any spill overs
+Maintained the stability of all environments.
+
+Consistently achieving 100% on-time delivery of project deliverables without any spill-overs reflects my commitment to maintaining a high standard of efficiency and reliability. Additionally, ensuring the stability of all environments contributes to a seamless workflow and overall project success
+--------------------------------------------------
+
+Process Compliance
+Quality Assurance Contributions:
+Made significant contributions to maintaining high-quality standards in project deliverables.
+I have documented both existing and new processes associated with routine tasks
+
+Throughout the appraisal period, I actively played a pivotal role in upholding and enhancing the quality standards of our project deliverables. My efforts extended beyond the routine tasks, as I diligently documented both existing and new processes associated with various aspects of our work. This initiative aimed at fostering a culture of continuous improvement and ensuring the consistent delivery of high-quality outcomes
+--------------------------------------------------------
+
+Learning and Development:
+Continuous Learning Initiatives:
+Actively pursued continuous learning initiatives, acquiring new skills relevant to the role.
+Swiftly acquired new skills when confronted with unfamiliar challenges.
+Applied Learning in Work: Successfully applied newly acquired skills in day-to-day work, adding value to projects.
+
+I consistently demonstrated a proactive approach to continuous learning by actively engaging in relevant initiatives, showcasing my commitment to acquiring new skills. When faced with unfamiliar challenges, I swiftly embraced opportunities for learning, allowing me to quickly adapt and contribute effectively to the projects. The successful application of these newly acquired skills in my day-to-day work further underscored my commitment to adding significant value to our projects
+--------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+I had a very successful and impactful performance in the Verizon Cloud project. 
+Let me break down the key points I've mentioned in each area
+
+I've made significant contributions to the Verizon Cloud project across various dimensions
+Let me break down my achievements in each area:
+
+For the Contribution to Revenue:
+=================================
+Achieved more than the expected capacity, helping to increase revenue
+
+For the Delivery excellence: 
+============================
+with no delays and no unfinished tasks. Kept all systems stable and working well.
+or 
+Successfully completed all project tasks without any delays and kept all systems stable.
+
+About Process Compliance:
+==========================
+Made significant contributions to maintaining high-quality standards in project deliverables.
+I myself prepared scripts to speed up tasks and connected them to regular jobs.
+
+Learning and Development:
+==========================
+Always learning: I consistently worked on learning new things related to my job. 
+Whenever I faced new challenges, I quickly picked up the necessary skills. 
+I put those new skills to use in my daily tasks, making a positive impact on projects
+
+
+
+In summary, my achievements reflect a well-rounded contribution to the Verizon Cloud project
+I've demonstrated not only technical proficiency but also a commitment to process improvement,
+adherence to quality standards, and a proactive approach to personal and professional development.
+
+
+
+
+In summary, your achievements reflect a well-rounded contribution to the Verizon Cloud project. 
+You've demonstrated not only technical proficiency but also a commitment to process improvement, 
+adherence to quality standards, and a proactive approach to personal and professional development.
+
+
+
+
+
+ 
+These qualities are essential for driving project success and align well with the project's objectives.

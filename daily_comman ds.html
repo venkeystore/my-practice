@@ -1,0 +1,102 @@
+<body bgcolor="orange"/>
+<h1>Commands:-</h1>
+
+
+<h4>cat /proc/net/bonding/bond0   {Ethernet Channel Bonding Status}</h4>
+<h4>Mesos</h4>
+<p># Acquire token (change DC var as needed)<br>
+<br>
+DC=twinsburg; read -p vzid: USER; read -s -p Password: PW; \<br>
+token=$(curl -m15 -sS -X POST https://dcconnect-$DC.verizon.com:8443/acs/api/v1/auth/login -d '{"uid": "'$USER'", "password": "'$PW'"}' -H 'Content-Type: application/json' | jq -r .token)<br>
+<br> 
+ <br>
+# Display agents/masters without health status == 0<br>
+<br>
+curl https://dcconnect-$DC.verizon.com:8443/system/health/v1/nodes -H "Authorization: token=$token" |<br>
+  jq -r '.nodes[] | "\(.role) \(.host_ip) \(.health)"' | column -t | sort | awk '$3 != 0 {print}'<br>
+  </p>
+<p>
+
+<h4>To get which dir is consuming high space</h4>
+<p>sudo find /opt /var /home -maxdepth 2 | xargs -n1 sudo du -d2 -kxh | grep -wE "^[0-9]+G"</p>
+
+  
+<p><h4>Nic flapping:</h4> # dmesg -T | grep -i nic</p>
+ ./nodetool status | grep -i 10.12.79.1
+<p>
+<h4>Need to perform only Tuesday and Thursday</h4>
+You can find the script at this location per datacenter.<br>
+rocklin-prov, twinsburg-prov, arligton-prov, omaga-prov, perryman-prov<br>
+<br>
+python /home/devops/scripts/CheckMarathonEtcdConflicts.py<br>
+</p>
+
+<p>
+<h4>Verifing the ES status:</h4><br>
+PIPE=datax GROUP=platform<br>
+curl -X GET http://montana-${PIPE}-elasticsearch-c-montanalogs-${GROUP}.marathon.mesos:9200/_cluster/health?pretty <br>
+<br>
+PIPE=datax TENANT=platform <br>
+INDICES="ecs_app_logs platform_app_logs platform_app_stats platform_stdout_app_logs platform_stderr_app_logs"<br>
+for index in $INDICES; do<br>
+echo "FROM ES INDEX: $index";<br>
+curl -Ss -X GET http://montana-${PIPE}-elasticsearch-c-montanalogs-${TENANT}.marathon.mesos:9200/${index}-$(date "+%Y.%m.%d")/_search | jq '.hits.hits[]._source.message';<br>
+done<br></p>
+
+<h4>To find IPMI:</h4><br>
+# ansible -m debug -a var=ipmi_ip -o<br>
+<h3>To get metadata from provisioning servers.</h3><br>
+cat /etc/montana/config/nodemetadata.py|grep -i "'183','21'"<br>
+
+
+<h4>Facing any SSHerror while running ansible as like below:</h4><br>
+
+devops@magellan-prov ~ $ source bashrc<br>
+devops@magellan-prov ~ $ ansible -m ping -o 10.134.27.1 <br>
+10.134.27.1 | SUCCESS => {"changed": false, "ping": "pong"} <br>
+
+devops@magellan-prov ~ $ source <(docker run --rm ${REGISTRY_END_POINT}/montana/deploy-post-pxe:${DEPLOY_POST_PXE_ANSIBLE_TAG_VERSION:?} cat setup/setup_ansible_lib.sh) <br>
+devops@magellan-prov ~ $ ansible -m ping -o 10.134.27.1<br>
+10.134.27.1 | UNREACHABLE! <br>
+devops@magellan-prov ~ $ env |grep -i soc <br>
+SSH_AUTH_SOCK=/tmp/ssh-1ydjFNY2W1/agent.4647 <br>
+
+Then try <br>
+# unset SSH_AUTH_SOCK<br>
+
+<h2>To reboot node: <h4>deploy-post-pxe ansible -m reboot -b node_ip </h4></h2><br>
+
+
+<h2> To check docker log:
+<h4>
+docker logs container_id<br>
+docker logs container_id --since 10m | grep error<br>
+</h4></h2>
+
+<h2>Kubernaates commands:</h2>
+<h3>To connect the below cluster</h3><br>
+arlington<br>
+omaha<br>
+twinsburg<br>
+perryman-prod<br>
+<h3>docker run -it --rm -e RANCHER_SERVER=vcos-rancher.verizon.com k8s-docker.er.svcs.verizon.com/montana/k8s-utils:relv8.1.0.0-b5-t080121-ef5038f</h3><br>
+<h4>
+kubectl config use-context context_name<br>
+kubectl config get-contexts<br>
+
+
+</h4>
+
+
+<h2>Here are all the production prometheus alert urls</h2> 
+<h4>
+<a href="https://vcos-rancher.verizon.com/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts">arlington-mgmt</a><br>
+<a href="https://vcos-rancher.verizon.com/k8s/clusters/c-pfc8h/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts">arlington</a><br>
+<a href="https://vcos-rancher.verizon.com/k8s/clusters/c-2sdqd/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts">arlington-platformsvcs</a><br>
+<a href="https://vcos-rancher.verizon.com/k8s/clusters/c-2nrdv/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts">twinsburg</a><br>
+<a href="https://vcos-rancher.verizon.com/k8s/clusters/c-brb7z/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts">twinsburg-platformsvcs</a><br>
+<a href="https://vcos-rancher.verizon.com/k8s/clusters/c-zdpdt/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts">omaha</a><br>
+<a href="https://vcos-rancher.verizon.com/k8s/clusters/c-5kg2z/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts">omaha-platformsvcs</a><br>
+
+</h4>
+

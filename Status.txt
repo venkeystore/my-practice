@@ -1,0 +1,65 @@
+
+
+          AWS Global Infrastructure
+  ┌──────────────────────────────────┐
+  │               AWS                │
+  │             (Global)             │
+  └──────────────────────────────────┘
+                  │
+  ┌──────────────────────────────────┐
+  │       AWS Region (us-east-1)     │
+  └──────────────────────────────────┘
+                  │
+  ┌──────────----┬──────────----┬─────────----─┐
+  │  AZ-1        │  AZ-2        │  AZ-3        │   <── Multiple AZs per region
+  │ (us-east-1a) │ (us-east-1b) │ (us-east-1c) │
+  ├─────────----─┼──────────----┼──────────----┤
+  │ EC2          │ EC2          │ EC2          │   <── Instances distributed
+  │ RDS          │ RDS          │ RDS          │
+  │ S3           │ S3           │ S3           │
+  └─────────-----┴──────────----┴──────────----┘
+
+
+
+
+
+Diagram Representation of AWS VPC:
+
+
+                          AWS Region (us-east-1)
+  ┌───────────────────────────────────────────────────────────┐
+  │                        AWS VPC (10.0.0.0/16)             │
+  │                                                           │
+  │  ┌────────────────────────────┬───────────────────────────┐
+  │  │ Public Subnet (10.0.1.0/24)│ Private Subnet (10.0.2.0/24)│
+  │  │  Route Table: Public RT    │  Route Table: Private RT  │
+  │  │  IGW → 0.0.0.0/0           │  NAT → 0.0.0.0/0          │
+  │  │                            │                           │
+  │  │  EC2 (Web Server)          │  EC2 (App/DB Server)      │
+  │  │                            │                           │
+  │  └────────────────────────────┴───────────────────────────┘
+  │                                                           │
+  │                 ┌──────────────────┐                      │
+  │                 │    Internet GW   │                      │
+  │                 └──────────────────┘                      │
+  │                          │                                │
+  │  ┌───────────────────────────────────────────────┐       │
+  │  │      NAT Gateway (For Private Subnet)         │       │
+  │  └───────────────────────────────────────────────┘       │
+  └───────────────────────────────────────────────────────────┘
+
+
+
+DaemonSet:
+==========
+A DaemonSet ensures specific pods run on every node in the Kubernetes cluster.
+
+* DaemonSet ensures that a DaemonSet Pod is running on every node (node01, node02, node03).
+
+* Each DaemonSet Pod manages multiple application pods (Pod 1, Pod 2).
+
+* This setup is useful for running background services like monitoring agents, log collectors, or security tools.
+
+How does Prometheus work in monitoring?
+Prometheus collects metrics using exporters, stores time-series data, and triggers alerts for failures.
+

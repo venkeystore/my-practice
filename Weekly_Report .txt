@@ -1,0 +1,47 @@
+Weekly Report - Venkateswara Reddy
+
+Date: Mon - Fri (18/12/2023 - 22/12/2023)
+=========================================
+Tasks:
+Issue   Type Priority	Issue key	   Status	     Summary	                                                         Reporter	 Assignee       Created
+Fault	Major	        VCOSO-7375	  In Progress	omaha-ocp: 10.193.5.1 node is unreachable for Input/output error 	 mukkve7  	 mudiyve	    19-12-2023 
+Fault	Major	        VCOSO-7374	  In Progress	Arlington: 10.10.173.1 node is unreachable for Input/output error 	 mukkve7  	 obulaad	    18-12-2023 
+Fault	Major	        VCOSO-7358	  To Do	        omaha: NodeFilesystemAlmostOutOfSpace on 10.248.27.1 (dc12/mariadb)	 mukkve7  	 azhykad	    18-12-2023 
+
+
+VZ-cloud-Project: platform  Weekly work Status:
+Regular Monitoring (Monitoring Nodes, Pods and Clusters health status) 
+Pxe work (PXE booting nodes is a process of network-based booting using DHCP, TFTP, and HTTP to install systems.)
+
+
+
+Memory updated
+Here's the organized weekly work status for your VZ-cloud-Project: platform:
+
+Weekly Work Status
+1. Regular Monitoring:
+	Monitoring the health status of nodes, pods, and clusters. Created Jira's whereever required and updated all tasks in the google spread sheet(Which is use for tracking regular tasks)
+2. PXE Work:
+	PXE booting nodes, a process of network-based booting using DHCP, TFTP, and HTTP to install systems.
+	
+	
+	
+	
+
+Weekly Work Status:
+===================
+1. Regular Monitoring:
+	Monitored the health status of nodes, pods, and clusters.
+	Created Jira tickets where necessary.
+	Updated all tasks in the Google spreadsheet used for tracking regular activities.
+2. PXE Work:
+	Worked on PXE booting nodes, a process of network-based booting using DHCP, TFTP, and HTTP to install systems.
+
+
+	
+	
+	
+1. Regular Monitoring:
+	Monitored the health status of nodes, pods, and clusters.
+	Created Jira tickets where necessary.
+	Updated all tasks in the Google spreadsheet used for tracking regular activities.

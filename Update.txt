@@ -1,0 +1,86 @@
+slot
+rack
+mac
+type
+subtype
+env
+REGION
+ITRackTitle
+ITName
+NodeModel
+NodeClass
+ExtNetName
+StorageConfig
+StorageService
+StorageRole
+StorageVendor
+BondSlave2Mac
+K8s
+K8sCluster
+IP1
+NETMASK
+ipmi_ip
+SVCTAG
+
+
+
+
+
+
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }
+else if ($i ~ /^ITRackTitle=/) { ITRackTitle = substr($i, 13) }
+else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 11) }
+else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 11) }
+else if ($i ~ /^StorageService=/) { StorageService = substr($i, 16) }
+else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+
+}
+print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "ITRackTitle:", ITRackTitle, "NodeModel:", NodeModel, "NodeClass:", NodeClass, "StorageService:", StorageService, "K8sCluster:", K8sCluster, "HwSupport:"
+}';  done
+
+
+
+
+
+
+
+
+slot
+rack
+mac
+type
+subtype
+env
+REGION
+ITRackTitle
+ITName
+NodeModel
+NodeClass
+ExtNetName
+StorageConfig
+StorageService
+StorageRole
+StorageVendor
+BondSlave2Mac
+K8s
+K8sCluster
+IP1
+NETMASK
+ipmi_ip
+SVCTAG
+
+
+
+IP1 ipmi_ip NodeModel NodeClass ExtNetName StorageService K8s K8sCluster rack
+ 
+
+
+
+
+
+
+

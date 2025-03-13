@@ -1,0 +1,3 @@
+VCOS platformsvcs kubernetes clusters:
+---------------------------------------
+In each datacenter we are running a dedicated kubernetes cluster to provide some platform level services.

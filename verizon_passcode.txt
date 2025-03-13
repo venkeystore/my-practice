@@ -1,0 +1,69 @@
+First Name				Middle Initial	Last Name	Worker Type	Worker Status	EID				CIM Number	OneWorldID	OneWorld Number	VZID	VZWID
+VENKATESWARA REDDY	 		   			MUKKAMALLA	Contractor	Active			4112156151		8802675		mukkve7	    850009706		MUKKVE7	MUKKVE7
+
+Community ID: VZNE
+
+4digit pin: 9344
+CIM Number: 8802675		
+ve7VZ ID: mukkve7
+wind pass: dec@2020| Venkey@88 | Venkey#8808 | venkEy#8
+SPIN: 88085880
+
+
+ADEBP\MUKKVE7
+
+EMEA-DSMAIN\MUKKVE7
+
+
+
+Domain Accounts::
+-----------------
+EMEA-DSMAINTEST\MUKKVE7
+EMEA-DSMAIN\A-MUKKVE7
+EMEA-DSMAIN\MUKKVE7  - use 
+
+10. How do I VPN to DevNet?
+If you are authorized to use DevNet (see "How do I get on DevNet?" above), you will be able to VPN in from home, from the corporate network, etc. Your existing Duo ID will work – no need to change anything with that. 
+
+You will, however, need to manually add a new connection in Pulse. (warning)There are separate URLs for Windows PC and Apple OS X (MAC) Junos Pulse client applications.(warning)
+
+Domain
+PC
+MAC
+
+USWIN	https://rcnsslvpn.verizon.com/pulse	https://rcnsslvpn.verizon.com/mac
+EMEA-DSMAIN	https://rcnsslvpn.verizon.com/pulse	NA
+VDSI	https://rcnsslvpn.verizon.com/pulse-vdsi	https://rcnsslvpn.verizon.com/pulse-vdsi
+
+
+
+https://jira.verizon.com/browse/NPDLS-26856
+
+
+GCM-
+
+
+
+
+To check device status :
+https://vzsp.verizon.com/vzsp/DeviceController
+1:54
+verizon passd url :http://websso.verizonwireless.com/passwordservices/ssoutil.html
+https://cim.verizonwireless.com/cimIsoPreAuth/?mode=friendly&destinationURL=https%3A%2F%2Fwebsso.verizonwireless.com%2Fpasswordservices%2Fssoutil.html
+
+https://pservice.verizon.com/#/home
+
+
+
+
+
+
+https://login.verizon.com/onesso/login.jsp?CHALLENGE=&SMAGENTNAME=$SM$xxOCPR0b%2fqp%2bZYrjZcOycaixJetTBmDu%2fzO33I0WnFueKHoKWixgW6QQi1QUpB15&TARGET=$SM$https%3a%2f%2foneprofile%2everizon%2ecom%2f
+
+
+
+
+I've dispatched the incident (INC012150478#) for that issue. You can track the status of your incident online at https://atyourservice.verizon.com/ays and add any additional information to the incident. To check the status of your request go to the homepage > Tap on your Name on the right hand top corner and select 'view all support tickets'. Is there anything else I can assist you with today?
+
+
+

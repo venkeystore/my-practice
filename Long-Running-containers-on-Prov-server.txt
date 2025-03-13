@@ -1,0 +1,22 @@
+
+Long-Running-containers-on-Prov-server:
+---------------------------------------
+#docker ps | grep container_name
+
+if the container up&running since longrunning
+                                                                                                                                                                      admiring_minsky
+#docker stop container_name
+#docker rm container_name
+#docker ps | grep container_name
+
+
+EX:history for rocklin
+----------------------
+devops@rocklin-prov ~ $ docker ps | grep admiring_minsky
+8b2bd816cc21        10.69.33.1:9003/montana/ssre-ipmi-toolkit:1.5                          "bash"                   2 days ago          Up 2 days                                                                                                                                                                           admiring_minsky
+devops@rocklin-prov ~ $ docker stop admiring_minsky
+docker rm admiring_minskyadmiring_minsky
+devops@rocklin-prov ~ $ docker rm admiring_minsky
+admiring_minsky
+devops@rocklin-prov ~ $ docker ps | grep admiring_minsky
+

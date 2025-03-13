@@ -1,0 +1,31 @@
+#kubernetes deployment yaml syntax
+
+#Sure! Here is a brief syntax guide for creating Kubernetes deployment YAML files:
+
+
+apiVersion: apps/v1              # the API version of the Kubernetes object 
+kind: Deployment                # the type of Kubernetes object
+
+metadata:
+  name: my-deployment           # the name of the deployment
+  labels:                       # labels to associate with the deployment
+    app: my-app
+
+spec:
+  selector:                     # the pod selector used to match the replicas
+    matchLabels:
+      app: my-app
+  replicas: 3                   # the number of replicas to create
+  template:
+    metadata:
+      labels:
+        app: my-app            # the labels of the pod created
+    spec:
+      containers:               # the list of containers defined in the pod
+        - name: my-container    # the name of the container
+          image: my-image       # the container image to use
+          ports:
+            - containerPort: 80 # the port to expose on the container
+
+
+#This is just a basic example to get you started. You can add more fields and customize the deployment to your specific needs. Hope it helps!

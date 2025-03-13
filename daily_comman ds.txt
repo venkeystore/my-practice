@@ -1,0 +1,948 @@
+Disk writes pull report: python findClassps.py omaha 2020-8-12 
+-----------------------------------------
+Twinsburg (SmartmonPercWriteEraseCount /dev/sda 10.11.84.1 mesos major CASSANDRA):
+Created Jira 10.11.84.1 --https://jira.verizon.com/browse/NPDLS-26671 -- root disk perc write erase count exceeds above 125, opened RadiSys ticket to replace the root disk.  
+--------------------------------------------------------
+Perryman 2020-10-02 dcos health status changes:
+100     0   TASK_FAILED none if u observe multiple dcs at a time may be the issue releated to artifactory down:  https://jira.verizon.com/browse/NPDMON-10381
+in marathon we are observing in dbug section: Failed to launch container: Failed to run '/opt/docker/dockerwrapper -H unix:///var/run/docker.sock pull 10.212.33.1:9003/montana/busybox:1.0': exited with status 1; stderr='2020/10/02 10:52:57 VaultWrapperModule.init 
+---------------------------------------
+procedure to restart kafka cluster:
+first stop data-x-indexes 
+second stop logstash shipper
+thired completly suspend and start kafka nodes and then start shiper and then start indexer
+--------------------------------------
+Validate Marathon apps for ETCD service conflicts:
+We have created a script to validate/detect etcd ranges and Marathon apps service & Ip conflicts, Please have your team to run it on Rocklin, Twinsburg-dit, Irving provisioning servers 2 times in a week ( Tuesday and Thursday ) and see if everything is good. Please follow the below confluence page for directions
+https://confluence.verizon.com/display/~v590670/Validate+Marathon+apps+for+ETCD+service+conflicts
+::Need to perform only Tuesday and Thursday::
+You can find the script at this location per datacenter.
+rocklin-prov
+twinsburg-prov
+arligton-prov
+omaga-prov
+perryman-prov
+
+python /home/devops/scripts/CheckMarathonEtcdConflicts.py
+
+Twinsburg-dit prov
+/home/montana/scripts/CheckMarathonEtcdConflicts.py
+Irving prov
+/home/montana/scripts/CheckMarathonEtcdConflicts.py
+------------------------------------------------------
+ if u want Serch messos nodes login to dc-connect and select MESSOS page and the go to agents and search nodes in that rack.
+---------------------------------------------------------------
+Verifing the ES status:
+-----------------------
+PIPE=datax GROUP=platform
+curl -X GET http://montana-${PIPE}-elasticsearch-c-montanalogs-${GROUP}.marathon.mesos:9200/_cluster/health?pretty
+
+PIPE=datax TENANT=platform 
+INDICES="ecs_app_logs platform_app_logs platform_app_stats platform_stdout_app_logs platform_stderr_app_logs"
+for index in $INDICES; do
+echo "FROM ES INDEX: $index";
+curl -Ss -X GET http://montana-${PIPE}-elasticsearch-c-montanalogs-${TENANT}.marathon.mesos:9200/${index}-$(date "+%Y.%m.%d")/_search | jq '.hits.hits[]._source.message';
+done
+
+cat /etc/montana/config/nodemetadata.py |grep -i "kaf"
+login one of the kafka node
+docker inspect mon-log-kafka-id |grep -i pipe  (allways go datax kafka)
+
+dcconnect-omaha.verizon.com
+omaha,twinsburg,rocklin
+-----------------------------------
+Cassandra Repair Staus checking process
+Cass-ops Container running in Rocklin
+https://dcconnect-rocklin.verizon.com:8443/second-marathon-web-proxy.marathon.mesos/ui/#/apps/%2Fvzcloud%2Frocklin-stg%2Ftools%2Fcassops-jobs
+[vzcloud@node-44a84245fcac ~]$ docker ps | grep cass
+e91624b680fd        10.69.33.1:9009/vzcloud/cassrepairtool:v0.0.1.
+b78-g40d7efc     "/ont-cass-tools/bin…"   6 hours ago         Up 6 hours          0.0.0.0:31038->22/tcp                                                                                                                                        mesos-3d97f089-c45c-4a7c-a8a1-977801d67e09
+Login to Cass-ops container
+[vzcloud@node-44a84245fcac ~]$ docker exec -it e91624b680fd sh
+/ont-cass-tools # cd /logs/
+check the trace log error 
+/logs # grep "ERROR" trace.log.2020-08-10-*
+----------------------------
+Deleteing red Indexes:
+PIPE=datax GROUP=platform
+curl -X GET http://montana-${PIPE}-elasticsearch-c-montanalogs-${GROUP}.marathon.mesos:9200/_cat/indices | grep -E "red"
+curl -X GET http://montana-${PIPE}-elasticsearch-c-montanalogs-${GROUP}.marathon.mesos:9200/_cat/indices | grep -E "red" | awk '{print $3}' | xargs -n1 -I INDEX curl -X DELETE http://montana-${PIPE}-elasticsearch-c-montanalogs-${GROUP}.marathon.mesos:9200/INDEX
+Access:
+You need to contact Berlantina Dinha for TOTFT.  I cannot give access to that project.
+
+---------------------------------------------------------------
+
+prometheus deployment: New post-pxe build is created
+new Radisys / Sandisk / WDC disk serial format ---> ata-WDC_PC_SA530_SDASN8Y512G_19351A804988
+
+Hardware-Issue Label Contents: Nic down/flapping, Ipmi Unreachable, Kernel Issue, Rebooting , Struck at Bios Firmware Issue, all should have Hardware-Issues. I've cleaned all those but going forward please add appropriate sub-labels as well. 
+Network-Issue:  anything that we need to involve network team needs to have Network-Issue label
+Lk-Platform: Please add this label for all nodes irrespective of issue any issue, even if application team logged a ticket we need to have a Lk-Platform Label
+-------------------------------------------------
+Switch replacement:
+- Alerts: Zabbix OR JIRA OR email.
+- Confirm: pinging/logging; restarting switched or other process; reboot of the switch followed by collect cl-support (needed to follow-up with Cumulus). 
+- Contact DC support personnel as per this link: https://confluence.verizon.com/display/DEV/Datacenter+contacts+onsite+support
+   For Omaha and Twinsburg: Open an AYS ticket (CHG000273546)  url: https://atyourservice.verizon.com/nav_to.do?uri=%2Fchange_request.do%3Fsys_id%3De512407f1b628c188f7decae6e4bcba8%26sysparm_stack%3D%26sysparm_view%3D   CHG000306730
+   For Arlington: Contact Kirk
+   For Rocklin: Need to send an emil (NEC OPS DCIM RCKL <nec.ops.dcim.rckl@verizonwireless.com>)
+   For Perryman: ETMS / RMOD / HSS
+- Follow-up with DC Support for power-cycling as you connect to console port for collecting logs. If power-cycling doesn't help, the switch will need to be replaced.
+
+Replacement procedure:
+- Check for spares in our inventory sheet and also ask DC support personnel to physically check for spares.
+- Check if DC support is comfortable with replacing the switch and reconnecting all the cables etc.
+- Following switch replacement, connect to console for next steps.
+- Ansible playbooks?
+- Follow with Dell or Radisys for RMA replacement.
+- Update our master Inventory google sheet with new/replacement switches' details.
+-----------------------------------------------------------
+for Radisys :
+
+project in (NPDLS, NPDMON) AND status in (Open, "In Progress", "To Do", "Under Review") AND priority in (Blocker, Critical, Major) AND labels in (Radisys) AND created >= -52w ORDER BY assignee DESC, summary ASC
+
+for Dell: 
+project in (NPDLS, NPDMON) AND status in (Open, "In Progress", "To Do", "Under Review") AND priority in (Blocker, Critical, Major) AND labels in (Radisys) AND created >= -52w ORDER BY assignee DESC, summary ASC
+
+for all hardware issues:
+
+project in (NPDLS, NPDMON) AND status in (Open, "In Progress", "To Do", "Under Review") AND priority in (Blocker, Critical, Major) AND labels in (Dell, Radisys, disk, SFP) AND created >= -52w ORDER BY assignee DESC, summary ASC
+
+project in (NPDLS, NPDMON) AND status in (Open, "In Progress", "To Do", "Under Review") AND priority in (Blocker, Critical, Major) AND created >= -52w ORDER BY assignee DESC, summary ASC
+-----------------------------------------------------------------------------------------------------------------
+Get hosts with volumes from Marathon:-
+curl -Ss leader.mesos:80/service/mon-marathon-service/v2/apps?embed=apps.tasks -H "Authorization: token=$token
+token=$(bash -c '
+read -p vzid: VZID; read -s -p Password: PW
+curl http://leader.mesos/acs/api/v1/auth/login -d \
+'\''{"uid": "'\''$VZID'\''", "password": "'\''$PW'\''"}'\'' -H "Content-Type: application/json" | jq -r .token
+'); echo $token
+
+curl -Ss leader.mesos:80/service/mon-marathon-service/v2/apps?embed=apps.tasks -H "Authorization: token=$token
+-----------------------------------------------------------
+sudo sshuttle -r VzId@140.223.0.67 -v 140.223.12.82 
+dmesg -T
+cat /etc/montana/config/nodemetadata.py | grep AS76 | grep -v "#"
+docker ps | grep -v CONTAINER | awk '{print system("docker stats --no-stream "$1), $1"-"$2": "}'
+docker ps | grep cass | head -1 | awk '{print $1}' |docker stats --no-stream
+dmesg -T | grep error
+dmesg -T |grep SIGTERM
+journalctl -r --list-boots
+grubby --default-kernel
+cat /etc/sysconfig/network-scripts/route-cbr0 
+systemctl status dcos-marathon
+sudo journalctl --list-boots
+systemctl status dcos-marathon
+-----------------------------------------
+The boot order was corrupted and fixed the boot order. DHCP not offering:
+montana@omaha-prov ~ $ docker run --net=host -ti ${REGISTRY_END_POINT}/montana/mon-tcpdump:5.0 bash
+root@omaha-prov:/# $ dhcpdump -i <Provision Server Interface with 10.X.X.1 IP-Address> -h <mac address of pxe-booting node >
+ 
+root@ewalukauna-prov:/# dhcpdump -i eno1 -h 44:a8:42:43:d9:58
+root@twinsburg-prov:/# dhcpdump -i ens802f0 00:1E:67:F8:A7:AA
+----------------------------------------------
+ansible -bm shell -a "docker stats --no-stream \$(docker ps | grep cass | head -1 | awk '{print \$1}')" $hosts
+-----------------------------------
+Disk IO ERRORS:media_wearout_indicator
+dmesg -T| grep -A3 -B3 "CDB: Write"  [boot disk need to replace]
+docker run -it --rm --net=host --privileged=true -v /home/montana:/export ${REGISTRY_END_POINT}/montana/mon-infratools:0.1 sh
+docker run -it -d --net=host --privileged=true -v /home/montana:/export 10.13.66.1:9004/montana/mon-infratools:0.1
+docker exec -it 53143df1dd28 smartctl -A /dev/sda | grep -i 'media_wearout_indicator' 
+docker exec -it f77c76044f2d  sh 
+smartctl -x /dev/sda
+docker exec mon-prometheus-node-exporter /usr/sbin/smartctl -B /usr/share/smartmontools/drivedb.h -A -d "sat" "/dev/sda" 
+docker exec mon-prometheus-node-exporter /usr/sbin/smartctl -B /usr/share/smartmontools/drivedb.h -d ata -a -i /dev/sda
+docker stats --no-stream e3edb9a9d2b4
+---------------------------------------------------------
+dmesg logs for previous boot: sudo journalctl -k -b -1
+cat /opt/montana/services/core/pxe/config/dhcp/dhcpd.conf |grep -B1 10.130.14.1
+ls -l /dev/disk/by-id | grep sda| grep -v part
+xfs_repair -n /dev/mapper/vg00-lvrroot1
+xfs_repair -L /dev/mapper/vg00-lvrroot1
+xfs_repair  -E -d  /dev/mapper/vg00-lvrroot1
+xfs_growfs /dev/mapper/vg00-lvrroot1
+sudo badblocks -v /dev/sda9
+ethtool ens802f1|grep Link
+dhcpdump -i eno1 -h  44:A8:42:16:B1:99
+'cat /etc/os-release | grep CoreOS'
+ip link show | grep swp52
+cat /etc/fleet/fleet.conf' 
+systemctl status node-install.service
+systemctl status dcos-mesos-slave.service
+systemctl status post-boot-fix.service
+systemctl | grep dcos dcos-3dt.service
+systemctl | grep slave
+grep -ia "2020:16:08" access.2020-04-23.16.log |  awk -F"|" '{print $9}' | sort | uniq -c
+/opt/montana/services/core/pxe/config/dhcp/dhcpd.conf | grep 10.132.13.1
+ cat /opt/montana/services/core/pxe/config/dhcp/dhcpd.conf| grep 10.10.95.1
+cat /etc/montana/config/nodemetadata.py |grep "'18','13'" 
+cat /etc/montana/config/nodemetadata.py |grep "'17'"   -->particular rack
+rhel node metadata path:
+-------------------------
+cat /etc/montana/metadata.conf
+smartctl -x /dev/sda
+IF node went emergency mode we need to run fsck command.
+fsck -y /dev/sda9
+------------------------
+The nodes are RAN or EDN where FE components are not deployed at all. Will be disabling monitoring for RAN or EDN nodes  in Twinsburg.
+systemctl status dcos-mesos-slave.service
+systemctl | grep slave
+'cat /sys/class/dmi/id/bios_version'
+# redis-cli -p 13047 cluster nodes
+cd /opt/cassandra/bin/
+./nodetool status | egrep "Data|^DN"
+./nodetool info
+systemctl poweroff -i
+mount | grep cass
+cat /etc/montana/config/nodemetadata.py| grep -v ^#  | grep "\['" | grep -v NODE_CMP_NONMESOS | wc -l
+cat /etc/montana/config/nodemetadata.py| grep -v "^#" |  grep -v "^#" |  egrep  -i "sal|mm|redis|swift|vantrix|mysql|MEMCACHE" | wc -l
+---------------------------------------------------------------------
+for i in `cat /tmp/rav/ip.txt`;do echo $i ; ssh $i docker ps |grep cass  ; done;
+for i in `cat ip_list.txt`;do echo "******" ;./radfwup $i check |grep "BIOS Version"; done; 
+
+for i in `cat /tmp/ip.txt `;do flm |grep $i;done;
+
+ for i in `cat \tmp\radisys_nodess_to_check;do echo $i ; ./radfwup $i check ; done
+ansible -m shell -a 'cat /sys/class/dmi/id/bios_version' -o $hosts | grep -v " SE5C610.86B.01.01.0027.071020182329"
+sudo cgpt find -t coreos-usr
+SDPTool 140.223.0.66  tocp tocp ipmi bmc reset cold
+-----------------------------------------------------------
+Login into Rocklin Ansible 
+ssh lktmp@140.223.23.131
+
+Once you are in there There are 2 files owned by root  ( So you guys dont delete it )
+Readme.txt 
+hosts_accessible_be_leafs+spines.txt
+The IP's of all the BE_Leaf and BE_Spines are listed in the file "hosts_accessible_be_leafs+spines.txt"
+
+To access a cumulus switch 
+ssh ip_of_switch
+Network_URLS:-
+https://docs.google.com/spreadsheets/d/1GoKJdHJYEsePRPWMiz9ZO_u51B9k0t44qfV5lrW1YLw/edit?ts=5dcd6ff5#gid=1507383673
+https://docs.google.com/spreadsheets/d/1Eq0SIw4IPIZmu5BXUbGMeIB45GYA0RS4YX2a7E7P2mM/edit?ts=5dd83acd#gid=622465553
+------------------------------------------------------------
+avg (rate(node_disk_writes_completed_total {device="dm-0",ss=~"MYSQL"}[1w])) by (job,hi)
+avg(rate(node_disk_writes_completed_total{device="dm-0"}[1w])) by (job)
+avg (rate(node_disk_writes_completed_total {device="dm-0",ss=~"CASSANDRA"}[1w])) by (job,hi)
+just test this query
+avg (rate(node_disk_writes_completed_total {device="dm-0",ss=~"CASSANDRA"}[1w])) by (job,hi) --getting node wise values
+avg (rate(node_disk_writes_completed_total {device="dm-0",ss=~"DC11_MYSQL"}[1w])) by (job,hi)
+for mysql need use like: DC11_MYSQL, DC12_MYSQL
+
+---------------------------------------------------------
+After vpn(pulse secure)  login we need to login dev:ssh anil@10.77.182.95 password: anil123 after that normal process will work.
+montana:?monDev0ps^/montana1
+tocp/tocp
+root !devops!
+Laniakea@123
+ssh vzcloud@10.77.182.119
+vzcloud@123
+burlington: ssh montana@198.159.138.250
+jumpserver: ssh parimsh@140.223.0.67
+Twins burg: ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p bedadan@140.223.0.67" montana@10.13.66.1
+Arligton:  ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p bedadan@140.223.0.67" montana@10.6.33.1
+Perryman: ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p bedadan@140.223.0.67" montana@10.136.33.1
+omaha:    ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p bedadan@140.223.0.67" montana@10.212.33.1
+irving: ssh  -i id_rsa -o ProxyCommand="ssh -W %h:%p ssreportal@198.159.192.143" devops@10.200.1.1  changeit
+tampa:  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p devops@10.75.100.49" devops@10.75.100.50
+Ewalanka:  ssh -i id_rsa  -o ProxyCommand="ssh -W %h:%p bedadan@140.223.0.67" montana@10.64.33.1
+Mellagan:  ssh -i id_rsa  -o ProxyCommand="ssh -W %h:%p bedadan@140.223.0.67" montana@10.161.33.1
+Rocklin:  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p bedadan@140.223.0.67" montana@10.69.33.1
+Tampa: ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p devops@10.75.100.49" devops@10.75.100.50
+Tampa : 10.75.100.50(provisioning server ip)
+Tampa-jumpserver: 10.75.100.49
+TwinburhDIT: ssh montana@140.223.87.250
+https://dcconnect-ewalukauna.verizon.com/
+https://dcconnect-magellan.verizon.com:8443/
+------------------------------------
+scp -i id_rsa  -o ProxyCommand="ssh -W %h:%p bedadan@twinsburgdc-lkjump.verizon.com" montana@10.212.33.1:/etc/montana/config/nodemetadata.py .
+----------------
+irving: 198.159.192.143 [Jump Server IP]
+irving: 10.200.1.1 [Prov server IP]
+Irving host console login : montana/Zk8w3w3jutRvpx0f
+irving console password:
+   Username: root
+   Password:  !devops!
+-------------------
+ETMS:https://etms.verizon.com/ticketing       user_name:abedadhala  perryman:pwoerdrian: 2020072407325,2020062200984 powerand ledstatus:2020091514829(vkgajjalakonda)
+Behivee credentails:
+reston -->162.47.112.115
+torrance-->162.47.116.143
+password: Verizon123
+https://vcms-visp-reston.verizon.com/ UN: bedadan password: Verizon123
+https://istg.vzvisp.com:8441/jira/browse/VDO-5063
+Public cert key Link:  NPDLS-23664
+
+
+ ssh bedadan@arlingtondc-lkjump.verizon.com curl http://10.35.22.1/devops_prod/admin/ssh-retrieve.php?file=..%2Fsigned-keys%2Fanil.kumar.reddy.bedadhala%40in.verizon.com%2F.ssh%2Fid_rsa-cert.pub > ~/.ssh/id_rsa-cert.pub
+wget http://199.219.37.214/devops_prod/admin/ssh-retrieve.php?file=..%2Fsigned-keys%2Fanil.kumar.reddy.bedadhala%40in.verizon.com%2F.ssh%2Fid_rsa-cert.pub
+mv ssh-retrieve.php@file=..%2Fsigned-keys%2Fanil.kumar.reddy.bedadhala@in.verizon.com%2F.ssh%2Fid_rsa-cert.pub id_rsa-cert.pub
+
+ ssh -o ProxyCommand="ssh -W %h:%p ssreportal@198.159.192.143" devops@10.200.1.1
+ 
+----------------------------
+ssh -o ProxyCommand="ssh -W %h:%p ssreportal@198.159.192.143" devops@10.200.1.1
+198.159.192.143 Jump Server IP
+10.200.1.1 Prov server IP
+devops: You'll login as Dev0ps User
+Other DC's
+ssh -o ProxyCommand="ssh -W %h:%p <VZID>@JumpserverIp or Hostname>" devops@DCProvserverIP   Chandra@123
+ssh-keygen -Lf id_rsa-cert.pub
+-----------------------------------------------------------
+Steps before upgrade:
+Check mount point status of cassandra
+montana@node-44a84216cd2a ~ $ mount | grep cass
+Check volume usage of cassandra
+montana@node-44a84216cd2a ~ $ df -kh | grep cas
+/dev/mapper/VGMM00-LVMM00  2.5T  644G  1.8T  27% /vzcloud/prod/cass/storage/das/hdd1
+find /proc/*/fd -ls | grep '(deleted)'
+sudo find /var /vzcloud /proc -maxdepth 2 | xargs -n1 sudo du -d2 -kh | grep -wE "^[0-9]+G"
+Check nodetool status of cassandra and disable gossip and thrift. Check nodetool info and see gossip and thrift was disabled. Flush temporarily  saved data to disk.
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool status | egrep "Data|^DN"
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool disablegossip
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool disablethrift
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool info
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool flush
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool enablegossip
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool enablethrift
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool enablebinary
+Check status of mesos slave and stop mesos slave to avoid task lost state to marathon.
+
+sudo sh -c 'systemctl kill -s SIGUSR1 dcos-mesos-slave && systemctl stop dcos-mesos-slave'
+sudo systemctl status dcos-mesos-slave
+Steps after upgrade:
+Check cassandra mount point is in read write
+montana@node-44a84216cd2a ~ $ mount | grep cass
+/dev/mapper/VGMM00-LVMM00 on /vzcloud/prod/cass/storage/das/hdd1 type ext4 (rw,relatime,seclabel,data=ordered)
+montana@node-44a84216cd2a ~ $
+
+Check the Cassandra volume usage and see if it matches before upgrade.
+montana@node-44a84216cd2a ~ $ df -kh | grep cas
+/dev/mapper/VGMM00-LVMM00  2.5T  644G  1.8T  27% /vzcloud/prod/cass/storage/das/hdd1
+
+Check if mesos slave is running.
+sudo systemctl status dcos-mesos-slave
+
+Check nodetool info to see gossip and thrift is enabled and status to see status of cluster.
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool info
+docker exec -it 99b075f8c7c0 /opt/cassandra/bin/nodetool status | egrep "Data|^DN"
+for i in $( cat /tmp/ipmi_anil.txt);do  idracadm7  -u montana -p montana1  -r  $i  getsvctagi;done
+--------------------------------------------------------------------------------------
+Radisys Firmware upgrade:
+cd sdptool
+./radfwup 140.223.5.230 check
+./radfwup 140.223.5.230 update
+./x 140.223.5.230 check
+SDPTool 140.223.0.66  tocp tocp ipmi bmc reset cold
+cd ipmitool
+bash ipmitool.sh
+./bmc-reset.sh 140.223.64.150 tocp tocp
+Dell nodes Firmware Upgrade:
+https://confluence.verizon.com/display/~nkundu/Dell+Poweredge+R630+Firmware
+https://confluence.verizon.com/display/~matthew.j.gilbert/DELL+Firmware+Update+Procedure
+ 
+-----------------------------------
+gluster volume heal dv_chunk info split-brain 
+gluster volume heal dv_chunk info split-brain 
+gluster volume heal dv_repo  info split-brain
+----------------------------------------------------
+master 10.47.36.1  1
+--------------------
+sudo systemctl daemon-reexec
+sudo systemctl restart dcos-diagnostics
+sudo systemctl restart copy-dockercfg
+Note:dcos-3dt services is replaced by dcos-diagnostics.
+
+If  TASK_KILLING    none  is comming follow bwllow procedure.
+First we need to run bellow command if not responding we need to restart docker and  daemon-reexec.if cassandra,mysql and gluster is running on that host approval is required.
+docker run -it --rm  $REGISTRY_END_POINT/montana/busybox:1.0 ls
+
+sudo systemctl daemon-reexec
+sudo systemctl restart containerd
+sudo systemctl restart docker.service
+---------------------------------
+keys deployment script: nou using now beacuse time based keys
+ enter host ip into push-key-hosts file and ran bellow playbook
+ansible-playbook -i push-key playbooks/deploy/push-keys-vzcloud.yml --extra-vars "hosts=push-keys"
+https://confluence.verizon.com/pages/viewpage.action?pageId=129740859
+https://confluence.verizon.com/display/DEV/Things+to+do+after+a+new+node+is+PXE+booted+to+cluster
+-----------------------------------------------
+Issues:
+1. The metadata file on provision server was updated but  it was not generated. So I executed below:
+$ curl http://localhost:8000/api/v1/newmetadata
+
+2. After step1, node-metadata on node complained of docker.socket.
+3. This was an old issue, as we need to removed the /etc/systemd/system/docker.service file. 
+   I guess this patch was missed or not executed. 
+4. After removing /etc/systemd/system/docker.service, node metadata update was successful. 
+6. Removed the dcos-agents as it is a non-mesos node.
+5. Docker info and /etc/fleet/fleet.conf shows correct result.
+montana@host-42-11 ~ $ cat /etc/fleet/fleet.conf
+metadata="MAC=00:1E:67:FD:90:4E,RACK=42,SLOT=11,TYPE=STORAGE,SUBTYPE=NONMESOS,ENV=PROD,REGION=ARLINGTON,ITRACKTITLE=BE79,ITNAME=ARLKR42S11.1S0,NODEMODEL=RADISYS_TOCP-SSLED-CFG3,NODECLASS=STORAGE,EXTNETNAME=NONE,STORAGESERVICE=OBJECT,STORAGEROLE=NONE,STORAGEVENDOR=EMC-ECS,ECSCLUSTER=NONE,MESOS_CLUSTER=A1"
+public_ip="10.42.11.1"
+etcd_request_timeout=5.0
+etcd_cafile=/etc/ca.crt
+etcd_certfile=/etc/etcd_client.crt
+etcd_keyfile=/etc/etcd_client.key
+etcd_servers=["https://127.0.0.1:2379"]
+montana@host-42-11 ~ $ docker info
+Containers: 6
+ Running: 0
+ Paused: 0
+--------------------------------------------------------------------------
+Hazel cast key remove process:
+------------------------------
+List out the hazel cast key using the below command, 
+# etcdctl ls /hz-etcd-cluster-dc12
+Remove the duplicate key using the below command, 
+# etcdctl rm /hz-etcd-cluster-dc12/hz-etcd-cluster-dc12-10.40.66.49-10.40.66.49-5701
+# etcdctl rm /hz-etcd-cluster-dc12/hz-etcd-cluster-dc12-10.9.65.49-10.9.65.49-5701
+# etcdctl rm /hz-etcd-cluster-dc12/hz-etcd-cluster-dc12-10.40.75.49-10.40.75.49-5701
+
+opskey for Haproxy failure:
+-------------------------------
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDroztxaeZkZoq3iR1TrKbOiPkBe6BKIcBXo30XcjyX77IaGxWba6yVqI1B5z1O21eIdV8zVJUPoKm2au18fnhnSOylpHLGTnMO3iO3fBTYwRY5CPyYJCNAd3Fj63mqcAVfdwGHqHhLzjY78ioaKeYXieqtKn3WT6nOiTcOXiFalRCWEx4XOzJOzurKppsfVJ1FBEu+L8eeezY4tkEZFOfqqXpLSuIXPu18F5bObJTnbt9pivnmWo7Isz9/QDTtILLc8tSr2baEaJS4Wq1R+W5WbhXQ48d6OIOoEVTemJrn4gLLZipZfXXW8VU6A5lW05FDKPsRoe1Cj3X+bOdLZy0J vzc-postprod@verizon.com
+---------------------------------------------
+pxe boot steeps:
+----------------
+https://confluence.verizon.com/display/DEV/PXE+Booting+in+the+right+way
+https://confluence.verizon.com/pages/viewpage.action?pageId=129730711
+--------------------------------------------------------------------
+Get WWN Disk label for root volume from each node onto Prov server:-
+ls -ld /dev/disk/by-id/* | grep wwn | grep $(basename $(readlink -f /dev/disk/by-label/ROOT)) | cut -d '/' -f 5 | cut -d '-' -f 1,2
+ssh <ip> "ls -ld /dev/disk/by-id/* | grep wwn | grep \$(basename \$(readlink -f /dev/disk/by-label/ROOT)) | cut -d '/' -f 5 | cut -d '-' -f 1,2"
+--------------------------------------------------------------------------------
+Trouble shooting mesos issue:
+
+https://confluence.verizon.com/display/~btheado/Troubleshooting+mesos+issues#Troubleshootingmesosissues-Mesosmasterhealthstatus=3
+--------------------------------------
+Removing Stale Quagga:-
+---------------------
+##Ssh into the trouble run and run the below script
+
+ bash host-monitoring-verify.sh 
+once run the script it diplay the commands like bellow we need to execute.
+To remove stale bgp, execute on the node: curl -k -X DELETE "https://127.0.0.1:8080/api/v1/network/removebgp/140.223.88.2/32"
+To delete, execute on the node : sudo ip link delete veth45161
+
+## Check for killed Nginx Container
+
+  docker ps -a | grep nginx 
+
+## inspect for Exnternal Ip
+
+  docker inspect c9af01c08a8f | grep -E 'EXTADD|APP_ID'
+
+## Cross check the External Ip and Use the api command to delete the stale route
+
+  curl -k -X DELETE "https://127.0.0.1:8080/api/v1/network/removebgp/<IP of externet>/32"
+
+  bash host-monitoring-verify.sh 
+
+https://confluence.verizon.com/display/~akash.mehta/Networking+Useful+Commands
+RHEL-7:
+------
+bash /opt/montana/scripts/host-monitoring-verify.sh
+
+----------------------------------------------------------
+NDB MYSQL Cluster status LINK:
+-----------------------------
+https://confluence.verizon.com/display/NPDVZC/MySql+NDB+Moving+to+Spare+and+Dummy+Mysql
+-----------------------------------------------------------------
+dcos-gaent-install Link:
+https://confluence.verizon.com/display/DEV/Things+to+do+after+a+new+node+is+PXE+booted+to+cluster
+------------------------------------------------------------------------------------------
+core os pxebooting Link:
+-----------------------
+https://confluence.verizon.com/pages/viewpage.action?pageId=129730711
+-----------------------------------------------------------------------------
+NOTE: Bios upgrade is staged so please drain the Mesos tasks and reboot it before PXE .
+Please use Ansible for any kind of operations as node password is changed.
+ 
+1) ansible -m shell -a "sudo systemctl kill -s SIGUSR1 'dcos-mesos-slave*' && sleep 3 && sudo systemctl stop 'dcos-mesos-slave*'" -o $hosts
+ 
+# Make sure slave is not running 
+2) ansible -m shell -a "systemctl | grep slave" -o $hosts
+You will get output something like this:
+10.101.22.1 | FAILED! => {"changed": true, "cmd": "systemctl | grep slave", "delta": "0:00:00.012632", "end": "2019-06-07 16:04:43.428411", "failed": true, "rc": 1, "start": "2019-06-07 16:04:43.415779", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+ 
+#Reboot the node
+3) ansible -m shell -a "sudo reboot -i" -o $hosts
+--------------------------------------
+Use this command to check the Marathon ID
+ansible -m shell -a 'echo "------------";for i in `docker ps -q`; do echo $i;docker inspect $i | grep -i MARATHON_APP_ID;done | grep MARATHON_APP_ID' 'mesos,&10.1.*'
+To check dcos health status changes:-
+ansible -m shell -a 'systemctl status "dcos-*" | grep Active:' control
+journalctl -u dcos-checks-poststart --since '2020-05-14 22:35'
+
+ansible -m shell -a 'cat /etc/os-release |grep "REDHAT_SUPPORT_PRODUCT_VERSION"' -o $hosts
+bash start_ansible2-3.sh
+host="10.130.31.1,10.131.15.1"
+ansible -m shell -a 'sudo systemctl daemon-reexec' -b $host_anil
+ansible -m shell -a 'sudo systemctl restart dcos-diagnostics' -b $host_anil
+
+ansible -m shell -a 'sudo cat /sys/class/dmi/id/bios_version ' -o $host_anil
+ansible -m shell -a "sudo systemctl kill -s SIGUSR1 dcos-mesos-slave* && sudo systemctl stop dcos-mesos-slave*" -o $host_anil
+ansible -m shell -a "systemctl | grep slave" -o $host_anil
+ansible -m shell -a "sudo reboot -i" -o $host_anil
+ansible -m debug -a var=mac 10.148.13.1
+ansible -m debug -a var=ipmi_ip -o 10.7.94.1
+ansible -b -m shell -a 'id -u vzcloud' 10.10.99.1
+ansible -b -m shell -a 'id -u vzcloud' 10.10.99.1
+ansible -m shell -a 'ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -5'  -b $host_anil1
+ansible -m shell -a 'cat /etc/os-release' -b $host_anil
+ansible -m shell -a 'docker ps' -b $host_anil
+ansible -m shell -a 'hostnamectl' -b $host_anil
+ansible -m shell -a 'systemctl | grep dcos' -b $host_anil
+ansible -m shell -a 'docker network ls' -b $host_anil
+ansible -m shell -a ' df -kh' -b $host_anil
+ansible -m shell -a ' lsblk;uptime' -b $host_anil
+ansible -m shell -a 'brctl show' -b $host_anil
+ansible -m shell -a 'netstat -nr' -b $host_anil
+ansible -m shell -a 'netstat -tlunp |grep 5051 ' -b $host_anil
+ansible -m shell -a "cat /sys/class/dmi/id/bios_version; cat /etc/os-release| grep -i pretty; lsblk| grep root" -o $host_anil
+ansible -m shell -a 'sudo systemctl restart docker.service' -b 10.109.13.1     
+ansible -m shell -a "df /var/lib/docker/overlay2" -i ./lkops  diskusage --become   
+ansible -m shell -a 'timedatectl | grep -E "(RTC|Universal) time:" | awk '"'"'{print $5}'"'"' | paste - - | awk '"'"'$1 != $2 {print "mismatch " $1,$2}'"'"'' -o control,platformsvcs,mesos,frontend | tee hwclock-check.out
+ansible -m shell -a 'hwclock --systohc' -b $(cat hwclock-check.out | grep mismatch | awk '{print $1}' | xargs echo | sed -e 's/ /,/g') 
+host_anil=`cat /tmp/anil_host.txt `
+echo $host_anil
+host_anil1=$(echo $host_anil  |awk '$1=$1' OFS=',')
+echo $host_anil1
+ansible -m shell -a 'sudo cgpt find -t coreos-usr|wc -l' -o $host_anil1  | grep "(stdout) 4"
+ansible -m shell -a "cat /sys/class/dmi/id/bios_version; cat /etc/os-release| grep -i pretty; lsblk| grep root" -o $host_anil 
+ansible -m shell -a "bash /home/montana/host-monitoring-verify.sh" $host_anil
+ansible -m shell -a "bash /home/montana/host-monitoring-clear.sh" $host_anil     
+ansible -m shell -a 'sudo systemctl status   logstashforwarder-vispx.service ' -b $host_anil
+ansible -m shell -a 'sudo systemctl stop   logstashforwarder-vispx.service ' -b $host_anil
+ansible -m shell -a 'sudo systemctl disable    logstashforwarder-vispx.service ' -b $host_anil  
+ ansible -m debug -a var=mac -o 10.29.9.1
+ansible -m shell -a 'sudo systemctl restrt marathon-haproxy.service' -b $host_anil1  
+Networking:
+ansible -m shell -a "cat /var/log/switchd.log | grep -i error -B4 -A4"  140.223.49.144  
+ansible -m shell -a "cat /var/log/switchd.log | grep -i critical -B4 -A4"  140.223.49.144 
+ansible -m shell -a 'docker exec $(docker ps | grep -i tcp-ha | awk '"'"'{print $1}'"'"') ls -ltrh /etc/haproxy/haproxy.cfg && date' $hosts
+
+ansible -m shell -a 'docker kill $(docker ps | grep -i infra |awk '"'"'{print $1}'"'"')' -b $host_anil1  --kill mon-infra
+ansible -m shell -a 'docker rm $(docker ps -a  |grep -i infra |awk '"'"'{print $1}'"'"')'  -b $host_anil1  --kill mon-infra exited containers
+ansible -m shell -a 'docker ps|grep node' -b $host_anil
+ansible -m shell -a 'docker ps|grep cad' -b $host_anil
+ansible -m ping mesos:frontend:nonmesos:control -i hosts | grep -A3 UNREACHABLE
+ansible -m shell -a "timeout 3 docker ps 2>&1 > /dev/null" mesos:frontend:nonmesos:control | grep FAILED
+Conatiner id Will display:
+docker ps| awk '{print $1}'
+----------------------------------------------------------
+To change bridge net mask 172.10 series to 10G ipaddress:
+hen use this version of deploy-post-pxe: relv1.0-b66-t110620-8f3ab09 and run this command:
+
+deploy-post-pxe ansible-playbook playbooks/platform/set-netmask.yml -l <yourhost>
+-----------------------------------------------------------------------------
+ran this playbook:-Re: Rocklin FE node (10.94.8.1) containers are missing
+
+ansible-playbook playbooks/deploy/host-monitoring.yml --extra-vars "hosts=all" -l '10.94.8.1'                                                                                                                
+-----------------------------------------------------------------
+Behive:
+--------
+ps -ef | grep quagga
+service quagga status
+------------------------------
+Navstar service unhealthy on 2 Arlington nodes:
+------------------------------------------------
+montana@arlington-prov ~ $ date; ssh 10.24.23.1 date; ssh 10.27.11.1 date
+Wed Jun  5 11:06:08 UTC 2019
+Wed Jun  5 11:02:01 UTC 2019
+Wed Jun  5 11:10:15 UTC 2019
+montana@arlington-prov ~ $ date; ssh 10.24.23.1 ntpq -pn; ssh 10.27.11.1 ntpq -pn
+Wed Jun  5 11:10:03 UTC 2019
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+ 10.6.33.1       166.37.162.103   3 u  363 1024  377    0.130  247126. 1910.18
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+ 10.6.33.1       166.37.162.103   3 u  895 1024  377    0.114  -245896 2376.84
+ sudo systemctl restart ntpd
+----------------------------------------------------------------------------
+Zabbix host details:-
+-------------------
+https://confluence.verizon.com/display/NPDSDN/Production+-+Zone+5+Access
+-------------------
+copy-config-docker.service is failed:-
+-------------------------------------
+montana@twinsburg-prov /opt/montana/services/core/er-jfrog $ ls -lrt
+total 56
+drwxr-xr-x. 6 montana montana  4096 Apr 29 20:39 container
+-rw-r--r--. 1 montana montana    53 Apr 29 20:40 VERSION
+drwxr-xr-x. 2 montana montana  4096 Jul  1 20:30 bin
+-rw-r--r--. 1 montana montana 10240 Jul  1 20:33 artifactory-deploy-certs.tar
+drwxr-xr-x. 2 montana montana  4096 Jul  1 20:33 servicefiles
+drwxr-xr-x. 6 root    root     4096 Jul  1 20:33 config
+Here we are not able to see docker.tar.gz file this serive was failed.we need to pull the file from any leader nodes it will work.
+Marathon leader ship got changed:-
+---------------------------------
+curl master.mesos:8181/exhibitor/v1/cluster/status|jq .
+for i in $(flm | grep CONTROL | awk '
+
+{print $2}
+' ) ; do echo $i ; echo stat | ncat $i 2181 | grep Mode; done
+etcdctl cluster-health
+journalctl -xe |grep  "Marathon Endpoints" or "working master"     (current master of the node)
+systemctl status dcos-marathon.service
+docker images -aq | xargs -l10 docker rmi
+docker ps | awk '{print $2}' | sort  | uniq -c
+du -skh * | grep G
+blockdev --getbsz /dev/sda
+---------------------------------------------------
+Hardware chabge request:
+Responsible director: Nanjundan,Vijay 
+Assigned To: Niraly,kundu
+-------------------------------
+Error response from daemon: Get https://10.6.33.1:9003/v2/: x509: certificate signed by unknown authority
+
+I ran the workaround fix for this issue on the 10 hosts (10.25.20.1,10.8.17.1,10.25.27.1,10.32.27.1,10.31.19.1,10.31.30.1,10.31.31.1,10.31.8.1,10.32.31.1,10.33.17.1):
+
+ansible -m shell -a 'systemctl restart copy-artifactory-tls-update.service' -b $hosts
+
+Once we are migrated to RHEL, we won't have this issue because in RHEL we aren't using the buggy copy-artifactory-tls-update.service.
+
+You can check the /platform/mon-test-all-mesos-slaves app debug tab in marathon to see what the last task failure message is and which host it happened. Then fix each host and use the 'reset delay' button to keep identifying more hosts with the issue.
+
+Please keep an eye out for this in the future.
+
+Another common error seen like this is BAD_CREDENTIAL on the docker pull. This is more of an intermittent issue and I've never found the root cause (possibly intermitten issues on the LDAP side). If anyone sees this one and can figure out the issue, I will be very grateful.
+------------------------------------------------------------------------------
+for foreign state issue, 
+  in idrac in storage--controllers---there is a tab setup--scroll down shud see in foreign configuration--- disk in foreign state---import configuration
+  disk will be in ready state reboot the node after that
+---------------------------------------------------
+roster Link:
+-----------
+https://docs.google.com/spreadsheets/d/1OhwYmWjUqe8sC2roSh-T-GcbS4aGUY8ld0mF3d12ulc/edit?ts=5d2c5082#gid=975484125
+--------------------------------
+"failed to create session":
+--------------------------
+ansible -m shell -a 'journalctl -r | head -n 100000 | grep "Failed to create session: Max" | head' -b control
+systemctl list-unit-files --user
+sudo systemctl restart dcos-net
+
+sudo systemctl restart systemd-logind
+systemctl list-unit-files --user
+sudo journalctl -r | head -n 100000 | grep "Failed to create session: Max" | head
+------------------------------------------
+source /opt/montana/services/orchestration/ansible/setup/setup_ansible_lib.sh
+deploy-post-pxe () {
+  EXTRA_ANSIBLE_MOUNTS=" \
+  -e ANSIBLE_PIPELINING=True \
+  -v $ANSIBLE_DIR/component_versions:$ANSIBLE_DIR/component_versions:ro \
+  -v $ANSIBLE_DIR/global_variables:$ANSIBLE_DIR/global_variables:ro \
+  -v $ANSIBLE_DIR/hosts:$ANSIBLE_DIR/hosts \
+  -v $ANSIBLE_DIR/../../storage/gluster/VERSION:$ANSIBLE_DIR/../../storage/gluster/VERSION:ro \
+  -v /opt/montana/services/dcos:/opt/montana/services/dcos \
+  -v /opt/montana/services/core/er-jfrog/artifactory-deploy-certs.tar:/opt/montana/services/core/er-jfrog/artifactory-deploy-certs.tar \
+  -v /opt/montana/services/docker.tar.gz:/opt/montana/services/docker.tar.gz \
+  " \
+ ANSIBLE_TAG_VERSION=deploy-post-pxe:4zy \
+ ANSIBLE_DOCKER_TTY=-t run_ansible_container "$@"
+}
+RHEL-7:  ansible -m shell -a "bash /opt/montana/scripts/host-monitoring-clear.sh" 10.32.84.1
+montana@twinsburg-prov ~ $  ansible -m shell -a "bash /home/montana/host-monitoring-verify.sh" 10.32.84.1
+10.32.85.1 | SUCCESS | rc=0 >>
+running disk monitoring, stale route and veth-monitor script
+Node is all good
+To REMOVE 
+montana@twinsburg-prov ~ $  ansible -m shell -a "bash /home/montana/host-monitoring-clear.sh" 10.32.84.1
+10.32.84.1 | SUCCESS | rc=0 >>
+running disk monitoring, stale route and veth-monitor script
+[2019-08-03 00:09:19+00:00]: ### veth425454 is ORPHANEDin 10.32.84.1 ###
+[2019-08-03 00:09:19+00:00]: deleting stale veth425454
+[2019-08-03 00:09:19+00:00]: ### veth495294 is ORPHANEDin 10.32.84.1 ###
+[2019-08-03 00:09:19+00:00]: deleting stale veth495294
+[2019-08-03 00:09:19+00:00]: ### veth497266 is ORPHANEDin 10.32.84.1 ###
+[2019-08-03 00:09:19+00:00]: deleting stale veth497266
+Node is all good
+
+
+for i in $( cat /tmp/ipmi_anil.txt);do echo $i; idracadm7  -u montana -p montana1  -r  $i  getsvctag;done
+-----------------------------
+smartctl run on nodes:
+----------------------
+for i in $(cat smartctl_nodes);do r=`ssh -i ~/.ssh/id_rsa -o ProxyCommand="ssh -W %h:%p bedadan@arlingtondc-lkjump.verizon.com" -o StrictHostKeyChecking=no montana@$i 'docker exec $(docker ps | grep -i infra | awk '"'"'{print $1}'"'"') smartctl -x /dev/sda | grep Media_Wearout_Indicator | awk '"'"'{print $8}'"'"''`;echo $i" "$r;done
+496  source /opt/montana/services/orchestration/ansible/setup/setup_ansible_lib.sh
+  we need to run source and deploy-post-pxe commands and the follow bellow steeps.
+  498  hosts='smartctl-nodes'
+  499  date
+
+  500  ansible -m shell --forks=1 -a 'docker exec $(docker ps | grep -i infra | awk '"'"'{print $1}'"'"') smartctl -x /dev/sda | grep Media_Wearout_Indicator | awk '"'"'{print $8}'"'"'; docker ps | grep -i vzcloud | awk '"'"'{print $2}'"'"'' $hosts  > /tmp/smartctloutput.2019-08-07-05.txt
+docker run -it -d --net=host --privileged=true -v /home/montana:/export 10.13.66.1:9004/montana/mon-infratools:0.1
+docker exec -it fb96fc84863c sh
+smartctl -x /dev/sda
+-----------------------------
+dcmigrator-server container(10.40.69.1) staged state:
+sudo systemctl status dcos-mesos-slave    (if not running need to restart)
+sudo systemctl restart docker
+docker ps
+sudo reboot -i
+--------------------
+kazoo.exceptions.NoAuthError:
+----------------------------
+montana@arlington-prov ~ $ leader_ip_attr="in_leading_master_ip=$(getent hosts leader.mesos | awk '{print $1}')"
+montana@arlington-prov ~ $ deploy-post-pxe ansible-playbook \
+> playbooks/upgrade/dcos-public-agents.yml \
+> -e $leader_ip_attr --skip-tags mesos_executor_patch \
+> -e dcos_skip_upgrade_checks=True -l 10.25.16.1
+
+--------------------------------------------
+Please check Root disk getting full in twinsburg
+
+sudo du -kh /opt /var /home --max-depth 4 | grep -E "^[0-9.]+G" 
+
+ restart journalreader-datax.service atleast it will readuse 30%
+
+ 
+If you see any overlay folder getting full try to inspect the container with folder name, mostly CI is the culprit please coordinate with App team and kill the CI.
+Make sure it will launches on non cassandra node this time.
+Delete respective overlay folder once its killed.
+
+for i in `docker ps -aq`; do echo $i; echo "_____"; docker inspect $i | grep f377adb93513b98272b4a6c2a71dbefc6b1dcb335363677f7fe19e46f773b373;done
+
+journalctl -fu systemd-journald.service  --since yesterday --since "5 days ago" | head
+journalctl -fu systemd-journald.service  --since yesterday --since "2019-09-25 04:00:00" --until "2019-10-02 04:06:12"
+
+docker ps | grep ci
+docker kill 2c5bd02a5783
+docker ps | grep ci
+sudo rm -r /var/lib/docker/overlay2/61849ba244bf9f1c916d8d78e991f36b1a1f0ef7baf62cb5c94be65899f2a2cb
+docker exec -it e5d6916f1c0d /opt/cassandra/bin/nodetool info
+sudo df -kh
+
+sudo find /proc/*/fd -ls | grep '(deleted)'
+systemctl | grep vzcloud
+systemctl | grep forwarder
+sudo find /opt /var /home -maxdepth 2 | xargs -n1 sudo du -d2 -kh | grep -wE "^[0-9]+G"
+sudo find / -maxdepth 2 | xargs -n1 sudo du -d2 -kh | grep -wE "^[0-9]+G"
+sudo find /var /vzcloud /proc -maxdepth 2 | xargs -n1 sudo du -d2 -kh | grep -wE "^[0-9]+G"
+sudo find /opt /var /home -maxdepth 2 | xargs -n1 sudo du -d2 -kh | grep -wE "^[0-9]+G"
+df -Th
+docker ps
+sudo find /var /vzcloud /proc -maxdepth 2 | xargs -n1 sudo du -d2 -kh | grep -wE "^[0-9]+G"
+
+--------------------------------
+sudo mount -t nfs -o nfsvers=3,tcp,nolock,port=4406,mountport=4406 10.34.70.1:/vzcloud/dc12-dv-repo /tmp/dv_repo_dc12_nfs
+gluster volume stop  dv_chunk
+gluster volume start  dv_chunk
+docker exec -it $(docker ps | grep gluster | cut -d' ' -f1) bash -c " gluster volume status dv_chunk"
+docker exec -it $(docker ps | grep gluster | cut -d' ' -f1) bash -c " gluster peer status | gluster pool list"
+-------------------------------------------------------
+ipmi unrechable:
+ethtool ens802f0 | grep "Link detected"
+Radisys: docker run -it --privileged=true -t ${REGISTRY_END_POINT}/montana/ssre-ipmi-toolkit:1.5 ipmitool lan print 3
+Dell: docker run -it --privileged=true -t ${REGISTRY_END_POINT}/montana/ssre-ipmi-toolkit:1.5 ipmitool lan print 1
+
+docker run -t --privileged=true -t ${REGISTRY_END_POINT}/montana/ssre-ipmi-toolkit:1.5 ipmitool lan print 1 | grep "IP Address"
+-----------------------------------------------------------
+DC12 Geo Location API Connectivity Failure:
+[root@dc12 ops-DC12 Twinsburg]$  python /postprod/ops/healthcheck/checkGeoLocationApi.py
+--------------------------------------------------------
+ Smartctl report:
+-----------------------------
+Hi Dinesh,
+
+Please verify the below ansible script to generate smartctl data everyday. It will trigger e-mail with Media_Wearout_Indicator value along with IP address in sorted order and it is much faster than ssh script method.
+
+From twinsburg provisioning server:
+source /opt/montana/services/orchestration/ansible/latest_ansible
+deploy-post-pxe () {
+  EXTRA_ANSIBLE_MOUNTS=" \
+  -e ANSIBLE_PIPELINING=True \
+  -v $ANSIBLE_DIR/component_versions:$ANSIBLE_DIR/component_versions:ro \
+  -v $ANSIBLE_DIR/global_variables:$ANSIBLE_DIR/global_variables:ro \
+  -v $ANSIBLE_DIR/hosts:$ANSIBLE_DIR/hosts \
+  -v $ANSIBLE_DIR/../../storage/gluster/VERSION:$ANSIBLE_DIR/../../storage/gluster/VERSION:ro \
+  -v /opt/montana/services/dcos:/opt/montana/services/dcos \
+  -v /opt/montana/services/core/er-jfrog/artifactory-deploy-certs.tar:/opt/montana/services/core/er-jfrog/artifactory-deploy-certs.tar \
+  -v /opt/montana/services/docker.tar.gz:/opt/montana/services/docker.tar.gz \
+  " \
+ ANSIBLE_TAG_VERSION=deploy-post-pxe:5a \
+ ANSIBLE_DOCKER_TTY=-t run_ansible_container "$@"
+}
+cd /opt/montana/services/orchestration/ansible
+ansible-playbook playbooks/deploy/fetch-smartdata.yml -l localhost,mesos or frontend
+
+Also to get email add your email id in playbooks/deploy/fetch-smartdata.yml  file separated with commas.
+------------------------------------------------------------------------------------
+Nirlay KT:(No disks have mounted in Perryman node - 10.156.31.1/ 140.223.50.131): https://jira.verizon.com/browse/NPDMON-9007
+----------------
+Dell nodes:Creating Virtuval Disk
+
+Go to Bios --> Device settings -->select raid controller one(1st option) -->configuration management-->Create Virtuval Disk -->Choose Unconfigured Phtsical Disk 
+-->click on any change -->ok--> in dowm select create virtuval disk -->confirm -->yes-->ok
+
+-----------------------------------
+NGINX_SDN_PROXY_CHEKC:
+---------------------
+For more clarity for monitoring Folks, This is the email to check the nginx-sdn-proxy-aws health in all the Dc's. 
+
+Whenever we get this email please get into the container which is not responded and check the /var/log/syslog for errors and please log a ticket if the error continues.
+
+I see the following errors in syslog. 
+Nov  1 22:00:06 8d6a37f4e2f0 vzcloud_nginx_sdn_proxy_aws: 2019/11/01 22:00:06 [error] 65#0: *69029 nginx.vzwtag.prod.cloud.synchronoss.net could not be resolved (110: Operation timed out), client: 10.167.5.5,
+server: nginxsdn001.vzwtag.prod.cloud.synchronoss.net, request: "GET /management/health HTTP/1.1", host: "10.139.31.5:8081"
+Nov  1 22:00:06 8d6a37f4e2f0 vzcloud_nginx_sdn_proxy_aws: [01/Nov/2019:22:00:06 +0000] 10.167.5.5 - "GET /management/health HTTP/1.1" 502 97 "-" "curl/7.29.0" "-" - - "-" - 330 "5.001"
+----------------------------------------------------------------
+https://confluence.verizon.com/display/~nkundu/Configure+IPMI++in+Dell+from+console
+Configure IPMI in Dell from console
+Skip to end of metadata
+Created by Nirlay Kundu on Jun 26, 2019, viewed 17 timesGo to start of metadata
+
+
+Power cycle server
+Press F2
+Select iDRAC Settings
+Select "Reset iDRAC configurations to default"  Confirm Yes
+       Messsage"Resetting to defaults is in progress %"
+Select Continue
+Select iDRAC
+Select Network
+       Static IP ADDRESS "add value"  140.223.x.x  ( ask Anmol)
+       Static Gateway "add value"  140.223.x.1
+       Static Subnet mask "add value" 255.255.x.x
+Exit or Back
+Select iDRAC Settings
+Select User Configuration
+       User Name "add value"
+       Change Password "add value"   Confirm password
+Exit (save)
+Finish
+-----------------------------------------
+DHCP Troubleshooting:
+--------------------
+montana@omaha-prov ~ $ docker pull ${REGISTRY_END_POINT}/montana/mon-tcpdump:5.0
+docker run --net=host -ti ${REGISTRY_END_POINT}/montana/mon-tcpdump:5.0 bash
+root@omaha-prov:/# $ dhcpdump -i <Provision Server Interface with 10.X.X.1 IP-Address> -h <mac address of pxe-booting node >
+root@ewalukauna-prov:/# dhcpdump -i eno1 -h 44:a8:42:43:d9:58
+-----------------------------------------
+import subprocess
+import json
+import re
+import os
+import sys
+import pdb
+import socket
+import string
+import argparse
+import commands
+import smtplib
+
+from datetime import datetime
+from threading import Timer
+from datetime import timedelta
+from time import sleep
+from email.mime.text import MIMEText
+from MarathonHelper import *
+from ConfigHelper import *
+from EmailHelper import *
+----------------------------------
+----------------------
+put container on maintenance mode
+so that you can delete from marathon
+
+ips="10.16.17.1" ;
+
+curl leader.mesos:5050/maintenance/schedule |
+jq --arg ips "${ips:?}" --arg date "$(date -d now +%s)" '{
+ windows: ((.windows // []) +
+   ($ips | split(" ") | [{
+     machine_ids: map({ip: ., hostname: .}),
+     unavailability: {
+       start: { nanoseconds: (($date + "000000000") | tonumber) },
+       duration: { nanoseconds: 3600000000000 }
+     }
+   }]))
+ }
+' | tee maint.json
+
+
+curl -X POST -i leader.mesos:5050/maintenance/schedule -d@maint.json
+do this from prov server
+------------------------------
+Cadvisor is not running on perryman:
+journalctl -fu mon-prometheus-cadvisor.service
+sudo netstat -pna| grep -i 48080
+systemctl restart etcd.service
+sudo systemctl restart etcd2.service
+systemctl | grep -i cad
+ journalctl  |grep "main process exited"
+docker ps | grep -i cad
+ uptime;systemctl status switchd.service | grep Active;systemctl status zabbix-agent.service | grep Active
+----------------------
+ELK LOG trouble shooting:
+-------------------------
+Login to platform marathon
+stop shipper and thend indexer and then suspend kafka
+after two minutes scale kafka to 7 and scale indexer and shipper to 10
+--------------------------------------------------------------------
+node exporter deployment:
+source /opt/montana/services/orchestration/ansible/setup/setup_ansible_lib.sh
+deploy-post-pxe () {
+  EXTRA_ANSIBLE_MOUNTS=" \
+  -e ANSIBLE_PIPELINING=True \
+  -v $ANSIBLE_DIR/component_versions:$ANSIBLE_DIR/component_versions:ro \
+  -v $ANSIBLE_DIR/global_variables:$ANSIBLE_DIR/global_variables:ro \
+  -v $ANSIBLE_DIR/hosts:$ANSIBLE_DIR/hosts \
+  -v $ANSIBLE_DIR/../../storage/gluster/VERSION:$ANSIBLE_DIR/../../storage/gluster/VERSION:ro \
+  -v /opt/montana/services/dcos:/opt/montana/services/dcos \
+  -v /opt/montana/services/core/er-jfrog/artifactory-deploy-certs.tar:/opt/montana/services/core/er-jfrog/artifactory-deploy-certs.tar \
+  -v /opt/montana/services/docker.tar.gz:/opt/montana/services/docker.tar.gz \
+  " \
+ ANSIBLE_TAG_VERSION=deploy-post-pxe:relv1.0-b79-t100920-e7e905b \
+ ANSIBLE_DOCKER_TTY=-t run_ansible_container "$@"
+}
+
+
+And then run the below playbook,
+
+deploy-post-pxe ansible-playbook playbooks/deploy/deploy-prometheus-files.yml 
+----------------------------------------------------------------------------------
+file path for memory allocated file:  cat /sys/fs/cgroup/memory/memory.limit_in_bytes 25165824000
+------------------------------------------
+Disble dcos- services if nodes move to some other type: like glisuter to nfs
+hosts=xxx,yyy
+ansible -m shell -a 'docker ps' $hosts
+ansible -m shell -a "systemctl kill -s SIGUSR1 'dcos-mesos-slave*' && sleep 3 && systemctl stop 'dcos-mesos-slave*'" -b $hosts
+# Then stop and disable all the DCOS services
+ansiblec -m shell -a "systemctl stop 'dcos-*'" -b $hosts
+ansiblec -m shell -a 'systemctl list-unit-files dcos-* | grep dcos | awk '\''{print $1}'\'' | xargs systemctl disable' -b $hosts
+------------------------------------
+interface trobuble shooting:
+Physical layer:
+ip link show 
+ip link set etho up
+ip -br  link  show
+ip -s link show eth0 or ethtool eth0 --> .g. a 10Gbps interface that only reports 1Gbps speeds) can be an indicator of a hardware/cabling issue, or a negotiation misconfiguration on one side of the link (e.g., a misconfigured switch port).
+data  link layer:
+# ip neighbor show
+192.168.122.170 dev eth0 lladdr 52:54:00:04:2c:5d REACHABLE
+192.168.122.1 dev eth0 lladdr 52:54:00:11:23:84 REACHABLE
+# ip neighbor delete 192.168.122.170 dev eth0
+# ip neighbor show
+192.168.122.1 dev eth0 lladdr 52:54:00:11:23:84 REACHABLE
+network/internet layer:
+ping
+traceroute
+ip route show
+ ip route show 10.0.0.0/8
+10.0.0.0/8 via 192.168.122.200 dev eth0
+In the example above, we are sending all traffic destined to the 10.0.0.0/8 network to a different gateway (192.168.122.200).
+4: The transport layer:
+# ss -tlunp4  # display all listen ports
+#telnet database.example.com 3306 #remote machine it will display listen ports
+Telnet works fine for TCP, but what about UDP? The netcat tool provides a simple way to check a remote UDP port:
+
+# nc 192.168.122.1 -u 80
+test
+Ncat: Connection refused.
+ncat will tell the issue its in port level or intermediate firewll  blocking
+$ sudo ncat -l 9999
+#telnet <IP address of ncat system> 9999
+---------------------------------------
+Agent Unhealty:
+curl https://dcconnect-$DC.verizon.com:8443/system/health/v1/nodes -H "Authorization: token=$token" | jq -r '.nodes[] | "\(.role) \(.host_ip) \(.health)"' | column -t | sort | awk '$3 != 0 {print}'

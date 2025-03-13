@@ -1,0 +1,35 @@
+To docker logs:
+$ docker logs container_id
+$ docker logs container_id --since 5m | grep error
+
+File copy:
+-----------
+sudo docker ps | grep
+
+sudo docker exec container-id pwd
+        Ex:
+        [montana@node-001e67f237ea ~]$ sudo docker exec 9ecf0f855c4e pwd
+        /opt/spark-2.1.0
+       
+sudo docker cp exec src -it container-id:/dest
+        Ex:
+        [montana@node-001e67f237ea tmp]$ sudo docker cp /tmp/Spark_jar_March.tar 9ecf0f855c4e:/opt/spark-2.1.0
+        [montana@node-001e67f237ea tmp]$
+        
+        [montana@node-001e67f237ea ~]$ sudo docker exec 9ecf0f855c4e ls -ltr | grep Spark_jar_March.tar
+        -rw-r--r--. 1 1001 1002 25788769 Apr 23 08:51 Spark_jar_March.tar
+
+
+
+cat /etc/montana/config/nodemetadata.py| grep -i IP1 | awk -F "," '{print $15}' |awk -F "=" '{print $2}'
+
+
+cat /etc/montana/config/nodemetadata.py | grep -i IP1= | awk '/IP1/ {print $1, $3}'
+
+
+scp -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump.verizon.com" devops@10.153.23.1:/home/montana/opsnew_scripts.tar.gz .
+
+
+
+
+

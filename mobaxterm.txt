@@ -1,0 +1,11 @@
+vi key_download.sh
+echo "Downloading..."
+curl http://199.219.37.214/devops_prod/admin/ssh-retrieve.php?file=..%2Fsigned-keys%2Fvenkateswara.reddy.mukkamalla%40in.verizon.com%2F.ssh%2Fid_rsa-cert.pub > ~/.ssh/id_rsa-cert.pub
+echo
+echo
+ls -ltr .ssh/id_rsa-cert.pub
+
+
+
+
+

@@ -1,0 +1,27 @@
+Amazon Web Services (AWS) offers several types of load balancers to distribute incoming application traffic across multiple targets, such as Amazon EC2 instances, containers, and IP addresses, within one or more availability zones. Load balancers enhance the fault tolerance and availability of your applications.
+
+As of my last knowledge update in January 2022, AWS provides the following types of load balancers:
+
+Classic Load Balancer (CLB): 
+============================
+This is the traditional load balancer that distributes incoming traffic across multiple Amazon EC2 instances. CLB operates at both the request and connection level.
+
+Application Load Balancer (ALB): 
+================================
+ALB operates at the application layer and allows you to route traffic based on content. It is designed to handle advanced routing of HTTP/HTTPS traffic and provides features such as host-based and path-based routing.
+
+Network Load Balancer (NLB):
+============================
+NLB operates at the transport layer (TCP/UDP) and is designed to handle high volumes of traffic. It is suitable for applications that require low-latency and high-throughput, such as gaming or real-time video streaming.
+
+Gateway Load Balancer (GWLB): 
+=============================
+Introduced after my last update, GWLB is a scalable and secure solution for handling traffic to Virtual Private Cloud (VPC) resources. It provides a single entry point for traffic and allows for centralization of network traffic management.
+
+AWS Global Accelerator: 
+========================
+While not exactly a load balancer, Global Accelerator is a service that uses Anycast IP addresses to route traffic over the AWS global network to optimal AWS endpoints. It can be used to improve the availability and performance of applications.
+
+When choosing a load balancer, consider factors such as the type of traffic, the level of control and customization needed, and the features required for your specific use case.
+
+Please note that AWS services and features may evolve, and there may be new developments or services introduced after my last update. Always refer to the official AWS documentation for the most up-to-date information.

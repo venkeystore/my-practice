@@ -1,0 +1,681 @@
+Printer IP : 166.45.146.23
+
+Here's the provided data formatted as a terminal code table:/Applications/Ivanti Secure Access.app/Contents/Resources/Ivanti.icns
+Jump Servers:
+ssh mukkve7@140.223.0.67
+ssh mukkve7@perrymandc-lkjump
+ssh mukkve7@magellandc-lkjump
+ssh mukkve7@arlingtondc-lkjump
+ssh mukkve7@omahadc-lkjump
+ssh mukkve7@twinsburgdc-lkjump
+ssh mukkve7@arlingtondc-lkjump.verizon.com
+ssh mukkve7@twinsburgdc-lkjump.verizon.com
+
+******************---------***************************
+| Here are the URLs for Radisys console access at each data center:
+| -----------------------------------------------------------------
+| Arlington: https://radisys-console.apps.platformsvcs.arlington.svcs.verizon.com
+| Twinsburg: https://radisys-console.apps.platformsvcs.twinsburg.svcs.verizon.com
+| Omaha: https://radisys-console.apps.platformsvcs.omaha.svcs.verizon.com
+| Magellan: https://radisys-console.apps.platformsvcs.magellan.svcs.verizon.com
+| Perryman: https://radisys-console.apps.platformsvcs.perryman.svcs.verizon.com
+|
+| Once loaded, execute the command below, replacing <ipmi ip address> with the target IP address:
+|
+| # bash radisys-console <ipmi ip address>
+
+Ex:
+[Wed Jan  8 05:36:12 2025] overlayfs: Cannot mount volatile when upperdir has an unseen error. Sync upperdir fs to clear state.
+[Wed Jan  8 05:36:14 2025] overlayfs: Cannot mount volatile when upperdir has an unseen error. Sync upperdir fs to clear state.
+
+sync -f /var/lib/containers
+
+
+|
+kubectl get node -l vcos.verizon.com/StorageService=MARIADB
+|
+| Use the regular IPMI usernames and passwords:
+| User: montana
+| Password: montana1
+| Password: ?monDev0ps^
+|
+| User: tocp
+| Password: tocp
+|
+| For new Dell nodes:
+| User: root
+| Password: calvin
+| ******************---------***************************
+|
+===================================================================
+| To isolate and keep only IP addresses on lines where they exist, and retain blank lines where no IP address is present, you can modify the  |regular expression slightly to work with Xcode’s regex handling.
+|
+| Notepad++: Regular expression:
+| ``````````````````````````````
+| In the "Find what" field, enter the following regular expression:
+| ^.*?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*$
+| In the "Replace with" field, enter:
+| \1
+| --------------@@@--------------------------
+| Xcode:egular expression:
+| `````````````````````````
+| Find:
+| ^(.*?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*|.*)$
+| Replace:
+| $2
+|
+| {
+| Explanation:
+| ^(.*?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*|.*)$: This expression captures two scenarios:
+|
+| Lines containing an IP address ((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})).
+| Lines without an IP address (.*), which will match as blank because the \2 group (for IP) won’t capture anything.
+| Replace with \2: This retains only the IP address on lines where it’s found and leaves other lines blank (preserving line structure).
+|
+| Using this pattern, lines with IP addresses will display just the IP, while other lines remain empty, maintaining line spacing.
+| }
+|
+=====================================================================
+
+
+PASSWORD='vEnkEy($)8'
+
+PASSWORD='passwd'
+PASSWORD='U2FsdGVkX1+XzB00ifN1EHbR1HepcMbo0tHg1zQ/SDE='
+PASSWORD='venkEy($)8'
+for i in $(cat hosts.txt); do
+    echo "$i" && echo '--------'  && sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'dmesg -T | grep -i error | tail -4 && echo "last reboot" && echo "-----------" && last reboot | tail -3'
+done
+
+
+Encrypt Using OpenSSL
+echo -n "venkEy(#)8" | openssl enc -aes-256-cbc -salt -base64
+To Decrypt:
+echo "U2FsdGVkX1+K6I0CqC1c+/Xu2Q==" | openssl enc -aes-256-cbc -d -base64
+
+PASSWORD='venkEy(@)8'
+for i in $(cat hosts.txt); do
+    echo "$i" && echo '----------------------'  && sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'last reboot | tail -3 '
+done
+
+
+for i in $(cat hosts.txt); do
+    echo "$i" && echo '--------'  && sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'cat /proc/net/bonding/bond0 | grep -E "Slave Interface:" -A 5 '
+done
+
+
+for i in $(cat hosts.txt); do
+    echo "$i" && echo '--------'  && sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'uptime" -A 10 '
+done
+
+PASSWORD='venkEy(@)8'
+for i in $(cat hosts.txt); do
+    echo "$i" && echo '--------'  && sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'df -Th | grep -i hadoop '
+done
+
+PASSWORD='venkEy(@)8'
+for i in $(cat hosts.txt); do
+    echo "$i" && echo '----------'  && sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'dmesg -T | grep -i nic | tail -4'
+done
+
+for i in $(cat hosts.txt); do
+    echo "$i" && echo '----------'  && sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'dmesg -T | grep -i nic | tail -4'
+done
+
+
+    sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'df -Th | grep -i hadoop '
+
+
+# Assuming your data is stored in a file named 'data.txt'
+cat log | awk -F ',' '{
+    for (i=1; i<=NF; i++) {
+        if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+        else if ($i ~ /^ITRackTitle=/) { ITRackTitle = substr($i, 13) }
+        else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 10) }
+        else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 10) }
+        else if ($i ~ /^StorageService=/) { StorageService = substr($i, 15) }
+        else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+    }
+    print "IP1:", IP1, "ITRackTitle:", ITRackTitle, "NodeModel:", NodeModel, "NodeClass:", NodeClass, "StorageService:", StorageService, "K8sCluster:", K8sCluster
+}'
+
+
+
+
+
+
+
+
+
+
+function flm() {
+  curl -k https://nodemetadata.svcs.verizon.com/api/v1/meta | jq -r '
+     to_entries | .[] |
+     "10.\(.value.RACK).\(.value.SLOT).1 " + "slot=" + .value.SLOT + "," +
+     "rack=" + .value.RACK + "," + "mac=" + .key + "," + .value.USERDATA + "," +
+     .value.CUSTOMUSERDATA'
+}
+
+
+
+function flm() {
+  curl -k https://nodemetada.apps.platformsvcs.magellan.svcs.verizon.com/api/v1/meta | jq -r '
+     to_entries | .[] |
+     "10.\(.value.RACK).\(.value.SLOT).1 " + "slot=" + .value.SLOT + "," +
+     "rack=" + .value.RACK + "," + "mac=" + .key + "," + .value.USERDATA + "," +
+     .value.CUSTOMUSERDATA'
+	 
+  curl -k https://nodemetadata.svcs.verizon.com/api/v1/meta | jq -r '
+     to_entries | .[] |
+     "10.\(.value.RACK).\(.value.SLOT).1 " + "slot=" + .value.SLOT + "," +
+     "rack=" + .value.RACK + "," + "mac=" + .key + "," + .value.USERDATA + "," +
+     .value.CUSTOMUSERDATA'	 
+}
+
+
+
+
+function flm() {
+  curl -sk https://nodemetada.apps.platformsvcs.arlington.svcs.verizon.com/api/v1/meta | jq -r '
+     to_entries | .[] |
+     "10.\(.value.RACK).\(.value.SLOT).1 " + "slot=" + .value.SLOT + "," +
+     "rack=" + .value.RACK + "," + "mac=" + .key + "," + .value.USERDATA + "," +
+     .value.CUSTOMUSERDATA' 
+	 
+  curl -sk https://nodemetada.apps.platformsvcs.omaha.svcs.verizon.com/api/v1/meta | jq -r '
+     to_entries | .[] |
+     "10.\(.value.RACK).\(.value.SLOT).1 " + "slot=" + .value.SLOT + "," +
+     "rack=" + .value.RACK + "," + "mac=" + .key + "," + .value.USERDATA + "," +
+     .value.CUSTOMUSERDATA'
+	 
+  curl -sk https://nodemetada.apps.platformsvcs.twinsburg.svcs.verizon.com/api/v1/meta | jq -r '
+     to_entries | .[] |
+     "10.\(.value.RACK).\(.value.SLOT).1 " + "slot=" + .value.SLOT + "," +
+     "rack=" + .value.RACK + "," + "mac=" + .key + "," + .value.USERDATA + "," +
+     .value.CUSTOMUSERDATA' 
+	 
+
+  curl -sk https://nodemetada.apps.platformsvcs.magellan.svcs.verizon.com/api/v1/meta | jq -r '
+     to_entries | .[] |
+     "10.\(.value.RACK).\(.value.SLOT).1 " + "slot=" + .value.SLOT + "," +
+     "rack=" + .value.RACK + "," + "mac=" + .key + "," + .value.USERDATA + "," +
+     .value.CUSTOMUSERDATA' 
+	 
+  curl -sk https://nodemetada.apps.platformsvcs.perryman.svcs.verizon.com/api/v1/meta | jq -r '
+     to_entries | .[] |
+     "10.\(.value.RACK).\(.value.SLOT).1 " + "slot=" + .value.SLOT + "," +
+     "rack=" + .value.RACK + "," + "mac=" + .key + "," + .value.USERDATA + "," +
+     .value.CUSTOMUSERDATA' 
+	 
+}
+
+
+
+
+
+
+
+Metadata:
+---------
+to check from prov server:
+$ cat /etc/montana/config/nodemetadata.py | grep node_IP
+
+cat /etc/montana/config/nodemetadata.py | awk -v RS=,  '{print NR "." $0}' | grep IP1 | sed 's/IP1/ /g ' | awk '{print $2}' | cut -d = -f2
+
+cat /etc/montana/config/nodemetadata.py | awk -v RS=,  '{print NR "." $0}' | grep ipmi_ip | sed 's/ipmi_ip/ /g ' | awk '{print $2}' | cut -d = -f2
+
+flm | awk -v RS=,  '{print NR "." $0}' | grep StorageService | sed 's/StorageService/ /g ' | awk '{print $2}' | cut -d = -f2 > metainfo
+
+Need IP addresses with associated details. To present this information in a tabular format as code 
+awk -v RS=,  '{print NR "." $0}' | grep IP1 | sed 's/IP1/ /g ' | awk '{print $2}' | cut -d = -f2
+
+
+
+Text Manipulation:
+-----------------
+cat file.txt  | grep -E "(Added entries:|Changed entries: |Removed entries:)" -A 10  
+ 
+grep -v "( Added entries:| Changed entries: | Removed entries:)" -A 10 
+
+cat logs | grep -Ev "(MD5| SHA1 | RMD160 | TIGER | SHA256)" > log
+
+cat log | grep -Ev "('  Added entries:'| '  Removed entries:' | '  Changed entries:' "
+ 
+awk -v RS=,  '{print NR "." $0}' | grep ipmi_ip | sed 's/ipmi_ip/ /g ' | awk '{print $2}' | cut -d = -f2
+
+Ping multiple nodes that is able to responding  or not responding:
+------------------------------------------------------------------
+for i in $(cat hosts.txt); do ping -c3 $i > /dev/null; if [ $? -eq 0 ]; then echo “${i} = Responded”; else echo “${i} = Not responded”; fi; done
+
+To get object wise meta information thru awk as record separate:
+----------------------------------------------------------------
+for i in $(cat hosts.txt); 
+do flm | grep $i | awk -v RS=, '{print NR "." $0}' | grep 'NodeModel' | sed 's/'NodeModel'/ /g ' | awk '{print $2}' | cut -d = -f2 ; done > metainfo
+cat metainfo 
+
+for i in $(cat hosts.txt);  do flm | grep $i | grep -oP 'IP1=\K[^,]+' ; done > metainfo
+cat metainfo 
+
+
+for i in $(cat hosts.txt);  do flm | grep $i | grep -oP 'StorageService=\K[^,]+' ; done
+
+grep -oP '(IP1=\S+).*?(NodeClass=\S+)' 
+
+-oP 'IP1=\K[^,]+' .*? 'StorageService=\K[^,]+' 
+
+for i in $(cat hosts.txt); 
+do flm | grep $i | grep -oP 'IP1=\K[^,]+' ; done > metainfo
+cat metainfo 
+
+
+for i in $(cat hosts.txt); do ansible -m debug -a var=ipmi_ip,ITrackTitle,ITName,SVCTAG,StorageService -o $i ; done
+
+ansible -m debug -a var=IP1 -o 140.223.1.139
+
+
+Kube commands: https://github.com/limbuu/kubernetes-cheatsheet
+==============
+cluster operator debug:
+kubectl get co (get list of cluster operators)
+kubectl describe co image-registry (To describe cluster operator)
+
+kubectl get po -A -o wide (To get list of pods )
+kubectl -n openshift-cluster-version get po
+kubectl get po -A | grep image-registry
+kubectl -n openshift-image-registry get pods -o wide | grep image-pruner-
+kubectl -n openshift-image-registry logs image-pruner-28124640-vx9v5 image-pruner
+kubectl -n openshift-machine-config-operator get po -o wide| grep machine-config
+kubectl get ds -A | grep machine
+kubectl -n openshift-machine-config-operator get ds machine-config-daemon
+kubectl -n openshift-machine-config-operator get po | grep machine-config
+kubectl -n openshift-machine-config-operator get po -o wide| grep machine-config
+ kubectl get nodes | grep NotReady
+kubectl -n openshift-machine-config-operator get po -o wide| grep machine-config | grep node-216-15.vcos.verizon.com
+for i in $(cat hosts.txt); do flm | grep $i | awk -v RS=, '{print NR "." $0}' | grep 'NodeClass' | sed 's/'NodeClass'/ /g ' | awk '{print $2}' | cut -d = -f2; done >metainfo
+for i in $(cat hosts.txt); do ping -c3 $i > /dev/null; if [ $? -eq 0 ]; then echo "${i} = Responded"; else echo "${i} = Not responded"; fi; done
+
+cd /opt/montana/services/orchestration/ansible/hosts
+
+
+
+$ kubectl -n platform get svc corpldap-proxy-lb-1  -o yaml | grep -i ingress -A3 -B3
+$ kubectl -n vzcloud-stg2 get svc | grep 152.198.0.2
+
+
+
+for i in $(cat hosts.txt); do flm | grep $i | awk -v RS=, '{print NR "." $0}' | grep 'NodeClass' | sed 's/'NodeClass'/ /g ' | awk '{print $2}' | cut -d = -f2; done >metainfo
+for i in $(cat hosts.txt); do ping -c3 $i > /dev/null; if [ $? -eq 0 ]; then echo "${i} = Responded"; else echo "${i} = Not responded"; fi; done
+cd /opt/montana/services/orchestration/ansible/hosts
+
+=========================================================
+Pending CSR deny:
+kubectl get csr
+kubectl get csr|grep -i localhost|wc -l
+kubectl get csr|grep -i localhost|grep -i pending|awk '{print $1}' >/tmp/venkey
+
+kubectl get csr|grep -v localhost|grep -i pending|awk '{print $1}' >/tmp/venkey
+
+for i in $(cat /tmp/venkey); do echo $i |xargs oc adm certificate deny; done
+for i in $(cat /tmp/venkey); do kubectl describe csr $i | grep ' Common Name: '; done
+oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs oc adm certificate approve
+ Common Name: 
+
+kubectl get csr|grep -v localhost|grep -i pending|awk '{print $1}' > /tmp/venkey
+
+oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs oc adm certificate approve
+
+
+
+
+for i in $(cat /tmp/venkey); do echo $i |xargs oc adm certificate approve; done
+
+kubectl get csr | grep -v localhost.localdomain
+
+
+
+kubectl get csr | awk '/Pending/ {print $1}' | xargs kubectl describe csr | grep "Common Name:"
+
+kubectl get csr | grep localhost.localdomain | awk '/Pending/ {print $1}' | xargs kubectl describe csr | grep "Common Name:"
+
+kubectl get csr | grep -v 'localhost.localdomain'
+
+kubectl get csr | grep -v 'localhost.localdomain' | awk '/Pending/ {print $1}' | xargs kubectl describe csr | grep "IP Addresses:"
+kubectl get csr | grep -v 'localhost.localdomain' | awk '/Pending/ {print $1}' | xargs kubectl describe csr | grep "Common Name:"
+
+
+
+kubectl -n openshift-file-integrity get csv
+
+for i in $(cat hosts.txt); do  kubectl -n openshift-file-integrity get po -o wide | grep  $i ; done
+
+for i in $(cat hosts.txt); do  kubectl get nodes | grep $i ; done
+
+kubectl delete pod mypod-0 --grace-period=0 --force
+
+
+Before you approve Pending CSR
+Find the nodes which are pending
+Figure out why the CSR is pending
+is the node one which was removed from the cluster due to being unhealthy? Is the node fullly healthy again? If not, then don't approve the CSR
+some other reason? figure it out and then decide whether to approve
+
+When the output of the kubectl get csr  command doesn't display the node name, a command like this might help you get the list:
+$ kubectl --context arlington-ocp2 get csr | awk '/Pending/ {print $1}' | xargs kubectl --context arlington-ocp2 describe csr | grep "Common Name:"
+         Common Name:    system:node:node-0-141.vcos.verizon.com
+         Common Name:    system:node:node-0-141.vcos.verizon.com
+		 
+ kubectl get csr | awk '/Pending/ {print $1}' | xargs kubectl describe csr | grep "Common Name:"
+ 
+
+================================================================================
+
+
+
+to check directly from node:
+$ cat /etc/montana/metadata.conf
+
+Dmesg command:
+--------------
+Dmesg command is mainly used to identify the failed devices, connections , I/O devices errors.
+$ dmesg -T | grep NIC/error
+$ dmesg -T | tail -15
+
+
+To docker logs:
+docker logs a7d09ee8a630 --since 20m | grep error
+$ docker logs container_id
+$ docker logs container_id --since 5m | grep error
+
+CASSANDRA node checking:
+-----------------------
+To check what permissions the mount point has
+$ mount | grep cass
+Ex:
+[montana@node-001e67f8b00a ~]$ mount | grep cass
+/dev/mapper/ssdmmvg-ssdmmlv on /pv/vzcloud-dc11/cass-mm/hdd type ext4 (rw,relatime,context=system_u:object_r:container_file_t:s0,stripe=32,data=ordered)
+
+check cassandra container:
+sudo docker ps | grep cass
+docker ps -a | grep k8s_cass
+
+To get into container
+docker exec -it <container_id> bash
+
+sudo docker exec 41b8cee42cff /opt/cassandra/bin/nodetool status | grep 10.5.19.1
+
+PATH:: cd /opt/cassandra/bin/
+
+./nodetool info
+/opt/cassandra/bin/nodetool status | grep 10.40.84.1
+/opt/cassandra/bin/nodetool status | egrep "Data|^DN"
+
+To start cassandra three services:
+ # /opt/cassandra/bin/nodetool enablegossip
+ # /opt/cassandra/bin/nodetool enablethrift
+ # /opt/cassandra/bin/nodetool enablebinar
+ 
+  /opt/cassandra/bin/nodetool enable
+
+[root@node-001e67f8b132 bin]# ./nodetool info
+ID           : 87d75a26-69a1-4907-b290-96903a3ab5a5
+Gossip active     : true
+Thrift active     : true
+Native Transport active: false
+
+
+$ df -Th
+
+If ansible command not found:
+
+$ source bashrc
+Before running deploy-post-pxe the below source to be run
+source <(docker run --rm ${REGISTRY_END_POINT}/montana/deploy-post-pxe:${DEPLOY_POST_PXE_ANSIBLE_TAG_VERSION:?} cat setup/setup_ansible_lib.sh)
+To remove variable
+unset SSH_AUTH_SOCK
+source bashrc
+
+
+Reboot the nodes using:(from prov server)
+$ deploy-post-pxe ansible -m reboot -b <node ip>
+
+
+
+
+To ping multiple IP's from prov server
+Ex:
+$ ansible -m ping -o 10.134.27.1,10.134.27.1,10.134.27.1
+
+
+
+ssh mukkve7@140.223.0.67
+ssh mukkve7@perrymandc-lkjump
+ssh mukkve7@magellandc-lkjump
+ssh mukkve7@arlingtondc-lkjump
+ssh mukkve7@twinsburgdc-lkjump
+ssh mukkve7@arlingtondc-lkjump.verizon.com
+ssh mukkve7@twinsburgdc-lkjump.verizon.com
+
+
+
+Disk Ussage commands:
+du -sh /var/pv/vcos-analytics/eshot/* 2>/dev/null
+du -ah /var/pv/vcos-analytics/eshot | sort -n -r | head -n 20
+
+du -sh /var/pv/vcos-analytics/eshot/indices/* 2>/dev/null 
+
+Important links:
+================
+Prometheus Alert Tickets per Datacenter: https://confluence.verizon.com/display/DEV/Prometheus+Alert+Tickets+per+Datacenter
+----------------------------------------
+
+Rancher:
+-----------
+(Arington, omaga, twinsburg)
+https://vcos-rancher.verizon.com/g/clusters 
+(Magellan)
+https://vcos-k8s-stg.verizon.com/g/clusters
+(Perryman)
+https://vcos-rancher-stg.verizon.com/g/clusters
+
+Prometheus pages:
+-----------------
+Twinsburg: https://vcos-rancher.verizon.com/k8s/clusters/c-2nrdv/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+Arlington: https://vcos-rancher.verizon.com/k8s/clusters/c-pfc8h/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+Omaha: https://vcos-rancher.verizon.com/k8s/clusters/c-zdpdt/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+Perryman: https://vcos-rancher-stg.verizon.com/k8s/clusters/c-46j5b/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+Magellan: https://vcos-k8s-stg.verizon.com/k8s/clusters/c-dhdwp/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+
+Cleaning up K8s RKE cluster nodes and back to add with cluster:
+---------------------------------------------------------------
+https://confluence.verizon.com/display/VCOS/Cleaning+up+K8s+RKE+cluster+nodes
+
+
+
+kubectl -n vzcloud-dc12 get po | grep pod_name
+
+
+
+
+#To login prove servers
+perryman= ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump" devops@10.136.33.1
+arlington= ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump" devops@10.6.33.1
+twinsburg= ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump" devops@10.13.66.1
+magellan= ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump" devops@10.161.33.1
+omaha= ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump" devops@10.212.33.1
+# Node login
+ssh -i id_rsa  -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump" montana@
+
+OpenshiftTunnel= ssh -D 3142 -Nf -o "ProxyCommand=ssh -W %h:%p perrymandc-lkjump.verizon.com" montana@10.134.30.1
+
+OpenShiftClusterServer= ssh mukkve7@perrymandc-lkjump
+
+TimeBasedKey= curl 'http://199.219.37.214/devops_prod/admin/ssh-retrieve.php?file=..%2Fsigned-keys%2Fvenkateswara.reddy.mukkamalla%40in.verizon.com%2F.ssh%2Fid_rsa-cert.pub' > /Users/mukkve7/.ssh/id_rsa-cert.pub && ls -ltr /Users/mukkve7/.ssh/id_rsa-cert.pub && ssh-keygen -Lf /Users/mukkve7/.ssh/id_rsa-cert.pub | grep Valid
+
+
+
+
+It helps to ping multiple IPs:
+
+
+for i in $(cat hosts.txt); do ping -c3 $i; done
+
+
+Pending CSR deny:
+kubectl get csr
+kubectl get csr|grep -i localhost|wc -l
+kubectl get csr|grep -i localhost|grep -i pending|awk '{print $1}' >/tmp/muni
+for i in $(cat /tmp/muni); do echo $i |xargs oc adm certificate deny; done
+for i in $(cat csr); do kubectl describe csr $i | grep ' IP Addresses: '; done
+oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs oc adm certificate approve
+
+To describe service
+===================
+kubectl -n openshift-file-integrity describe svc metric
+kubectl -n knative-serving describe svc autoscaler-hpa-sm-service
+
+kubectl -n platform describe svc kube-state-metrics
+
+kubectl -n  172.18.206.79
+
+kubectl -n open-cluster-management-observability describe svc observability-thanos-store-shard-1
+
+kubectl -n vzcloud-dc12 get po -o wide | grep 172.19.187.75
+
+kubectl -n openshift-ovn-kubernetes logs ovnkube-node-z2t8t kube-rbac-proxy-ovn-metrics | tail -15
+
+
+File coping commands:
+=====================
+scp -o ProxyCommand="ssh -W %h:%p user@jumpHost" user@host:/hostPATH /localPATH
+scp -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump.verizon.com" montana@10.153.23.1:/home/montana/file.txt .
+
+File copy from container to host:
+sudo docker cp a3bf2de34ada:/storage/giri/opsnew_scripts.tar.gz /home/montana
+
+
+File copy from host to container:
+sudo docker cp filePATH containerID:/targetPATH
+sudo docker cp li_python.py 3caaf46ecf98:/postprod/scripts/legal
+
+File copy from host to local:
+scp -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump.verizon.com" montana@10.136.17.1:/home/montana/li_1.py .
+
+File copy from local to host:
+scp -o ProxyCommand="ssh -W %h:%p mukkve7@twinsburgdc-lkjump.verizon.com" /Users/mukkve7/Downloads/li_python.py montana@10.136.17.1:/home/montana/
+
+
+File copy from host to local:
+scp -o mukkve7@twinsburgdc-lkjump.verizon.com:157.33.txt .
+
+
+scp mukkve7@perrymandc-lkjump:/home/MUKKVE7/logs . 
+
+scp mukkve7@perrymandc-lkjump:/tmp/logs . 
+scp mukkve7@perrymandc-lkjump:/tmp/venkat.txt . 
+
+CoreDNS - Brian
+X-Ray (image scanning) - Naveen
+FluentBit - Tulasi
+Jfrog (ER) (Artifactory) - Brian
+
+scp mukkve7@perrymandc-lkjump:/tmp/logs . 
+
+
+Kubernetes Real Time Project Flow in Telugu -- Public Now | Thank You for Members who paid for it.
+https://www.youtube.com/watch?v=cBvGnWLNdCk
+
+
+
+
+File copy from host to local:
+scp -o mukkve7@twinsburgdc-lkjump.verizon.com:157.33.txt .
+
+
+
+kubectl get pdb -l app=interdcmq -A
+
+
+To get dump from pod
+====================
+
+cat <<EOT > $HOME/.toolboxrc
+REGISTRY=k8s-docker.gr.svcs.verizon.com
+IMAGE=rhel8/support-tools
+TOOLBOX_NAME=toolbox-$(whoami)
+EOT
+sudo --preserve-env=HOME toolbox 
+
+
+cat <<EOT > $HOME/.toolboxrc
+REGISTRY=k8s-docker.gr.svcs.verizon.com
+IMAGE=rhel8/support-tools
+TOOLBOX_NAME=toolbox-${SUDO_USER}
+EOT
+
+
+
+
+sudo /usr/bin/bash -c "echo REGISTRY=k8s-docker.gr.svcs.verizon.com >/root/.toolboxrc; echo TOOLBOX_NAME=toolbox-mukkve7 >>/root/.toolboxrc; echo IMAGE=rhel8/support-tools >>/root/.toolboxrc; /usr/bin/toolbox" 
+
+
+
+
+{
+chroot /host
+podman login platform.er.svcs.verizon.com
+crictl ps | grep <podname>
+crictl inspect -o json <podid> | jq -r '.info.runtimeSpec.linux.namespaces[] | select(.type=="network") | .path'
+podman run --rm -v /tmp:/tmp --privileged --net ns:<path//var/run/netns/584b14a2-fc16-4f0d-9b12-bfca7cab7835>  platform.er.svcs.verizon.com/montana/mon-alpine-toolbox:3 tcpdump -w /tmp/internal.pcap -i eth0
+sh-4.4# cd /tmp/
+sh-4.4# chmod 777 internal.pcap }
+
+
+sudo /usr/bin/bash -c "echo REGISTRY=k8s-docker.gr.svcs.verizon.com >/root/.toolboxrc; echo TOOLBOX_NAME=toolbox-$(whoami) >>/root/.toolboxrc; /usr/bin/toolbox"
+
+
+sudo /usr/bin/bash -c "echo REGISTRY=k8s-docker.gr.svcs.verizon.com >/root/.toolboxrc; echo TOOLBOX_NAME=toolbox-mukkve7 >>/root/.toolboxrc; echo IMAGE=rhel8/support-tools >>/root/.toolboxrc; /usr/bin/toolbox" 
+
+chroot /host
+podman login platform.er.svcs.verizon.com
+crictl ps | grep 313bcdc461fce
+crictl inspect -o json b60eac9f8b24b | jq -r '.info.runtimeSpec.linux.namespaces[] | select(.type=="network") | .path'
+
+podman run --rm -v /tmp:/tmp --privileged --net ns:/var/run/netns/4c2615a5-3474-4376-9ae7-80bb8190b391  platform.er.svcs.verizon.com/montana/mon-alpine-toolbox:3 tcpdump -w /tmp/internal.pcap -i eth0
+
+
+sh-4.4# cd /tmp/
+sh-4.4# chmod 777 internal.pcap 
+
+ssh mukkve7@140.223.55.130
+ 
+File copy from host to local:
+scp node-215-9.vcos.verizon.com:/tmp/215-9_internal.pcap . 
+
+
+node-10-166.vcos.verizon.com
+
+mv /tmp/internal.pcap /tmp/internal.pcap
+
+
+10.29.73.1
+
+ssh mukkve7@perrymandc-lkjump
+
+
+
+
+workload:
+NodeHasIntegrityFailure	"# for node 10.xxx.yyy.1 run this command
+kubectl -n openshift-file-integrity get cm aide-node-fileintegrity-node-xxx-yyy.vcos.verizon.com-failed -o json | jq -r .data.integritylog"
+
+MCDDrainError	"# This command might give clue on the reason for this alert
+kubectl --context ${context:?} -n openshift-machine-config-operator logs deploy/machine-config-controller -c machine-config-controller --since 10m | grep ""error when evicting"" | awk '{print $10,$8}' | sort -u | tr -d '""' | column -t"
+
+
+
+1. Drain and Cordon the node before applying errata, 
+     kubectl drain <node> --ignore-daemonsets
+   kubectl cordon <node>
+
+
+     kubectl drain node-1-153.vcos.verizon.com --ignore-daemonsets

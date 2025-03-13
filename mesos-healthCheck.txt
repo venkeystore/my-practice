@@ -1,0 +1,98 @@
+10.27.6.1 - https://jira.verizon.com/browse/NPDMON-10309
+10.46.24.1 - https://jira.verizon.com/browse/NPDMON-10509
+
+no unhealthy mesos agents observed.
+jq -r '.nodes[] | "\(.role) \(.host_ip) \(.health)"' | column -t | sort | awk '$3 != 0 {print}'
+ % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                Dload  Upload   Total   Spent    Left  Speed														
+100 34781    0 34781    0     0  34781      0 --:--:-- --:--:-- --:--:--  722k
+montana@arlington-prov ~ $ date
+Tue Dec 15 05:55:51 UTC 2020
+
+no unhealthy mesos agents observed.
+jq -r '.nodes[] | "\(.role) \(.host_ip) \(.health)"' | column -t | sort | awk '$3 != 0 {print}'
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 34832    0 34832    0     0  34832      0 --:--:-- --:--:-- --:--:--  739k
+devops@arlington-prov ~ $ date
+Tue Jan 12 05:39:14 UTC 2021
+
+
+
+
+
+mesos agents looking healthy:
+ jq -r '.nodes[] | "\(.role) \(.host_ip) \(.health)"' | column -t | sort | awk '$3 != 0 {print}'
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 26873    0 26873    0     0  26873      0 --:--:-- --:--:-- --:--:--  267k
+devops@twinsburg-prov ~ $ date
+Wed Jan  6 09:41:48 UTC 2021
+
+
+
+
+
+
+
+	
+
+
+
+Mesos agent health status = 3
+ip              mesos_health    task_state      resource_issues
+10.131.26.1     3               TASK_RUNNING    none
+
+The health status 3 means the masters are unable to determine the health status of the mesos agent.
+
+This can be a transient problem, so if this just popped up in the email report, then check to see it is still an issue:
+
+# Acquire token (change DC var as needed)
+
+DC=arlington; read -p vzid: USER; read -s -p Password: PW; \
+token=$(curl -m15 -sS -X POST https://dcconnect-$DC.verizon.com:8443/acs/api/v1/auth/login -d '{"uid": "'$USER'", "password": "'$PW'"}' -H 'Content-Type: application/json' | jq -r .token)
+ 
+ 
+# Display agents/masters without health status == 0
+curl https://dcconnect-$DC.verizon.com:8443/system/health/v1/nodes -H "Authorization: token=$token" |
+  jq -r '.nodes[] | "\(.role) \(.host_ip) \(.health)"' | column -t | sort | awk '$3 != 0 {print}'
+  
+  
+  
+  
+
+  
+  
+  EX::
+  ====
+10.27.6.1 - https://jira.verizon.com/browse/NPDMON-10309
+10.46.24.1 - https://jira.verizon.com/browse/NPDMON-10509
+
+no unhealthy mesos agents observed.
+jq -r '.nodes[] | "\(.role) \(.host_ip) \(.health)"' | column -t | sort | awk '$3 != 0 {print}'
+ % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                Dload  Upload   Total   Spent    Left  Speed
+100 34781    0 34781    0     0  34781      0 --:--:-- --:--:-- --:--:--  722k
+montana@arlington-prov ~ $ date
+Tue Dec 15 05:55:51 UTC 2020
+
+
+
+agents currently looking healthy:
+jq -r '.nodes[] | "\(.role) \(.host_ip) \(.health)"' | column -t | sort | awk '$3 != 0 {print}'
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 29290    0 29290    0     0  29290      0 --:--:-- --:--:-- --:--:--  733k
+devops@omaha-prov ~ $ date
+Thu Dec 17 04:43:18 UTC 2020
+
+
+
+
+
+Fisrt we need to check the node is up&running
+
+#uptime
+have to check any mesos are running and need to hilight in mail report.
+#systemctl |grep dcos-
+#docker ps

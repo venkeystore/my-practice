@@ -1,0 +1,5 @@
+Technical configurations and examples:
+Define Multiple Alert Rules in Prometheus (alert-rules.yml)
+To effectively monitor Kubernetes nodes and network issues, define alerting rules in alert-rules.yml. These alerts help detect critical infrastructure issues such as missing nodes, unreachable nodes, network instability, and bonding degradation.
+
+

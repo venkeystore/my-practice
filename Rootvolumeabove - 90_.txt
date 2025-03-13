@@ -1,0 +1,50 @@
+Rootvolumeabove - 90%:
+Login into node
+After restarting forwarders root file system has to be under threshold:
+
+#systemctl | grep forwarder
+[montana@node-44a84216fb8a ~]$ systemctl | grep forwarder
+logstashforwarder-datax.service        loaded active running   mon-datax-logforwarder.service
+logstashforwarder-vzcloudx.service     loaded active running   mon-vzcloudx-logforwarder.service
+
+# systemctl restart mon-vzcloudx-logforwarder.service
+
+i brought it down to 59%
+[montana@node-44a84216fb8a ~]$ df -hT
+Filesystem                   Type      Size  Used Avail Use% Mounted on
+devtmpfs                     devtmpfs   63G     0   63G   0% /dev
+tmpfs                        tmpfs      63G     0   63G   0% /dev/shm
+tmpfs                        tmpfs      63G  2.9M   63G   1% /run
+tmpfs                        tmpfs      63G     0   63G   0% /sys/fs/cgroup
+/dev/mapper/vg00-lv_root     xfs       557G  324G  234G  59% /
+/dev/mapper/VGDB00-LVMYSQL00 ext4      733G   38G  658G   6% /vzcloud/prod/mysql/storage/das/ssd1
+/dev/sda1                    xfs      1014M  226M  789M  23% /boot
+tmpfs                        tmpfs      13G     0   13G   0% /run/user/1000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

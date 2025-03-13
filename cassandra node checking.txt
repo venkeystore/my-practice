@@ -1,0 +1,65 @@
+To check mount point:
+mount | grep cass
+
+check cassandra container
+docker ps | grep cass
+docker ps -a | grep k8s_cass
+
+To get into container
+docker exec -it <container_id> bash
+
+PATH:: cd /opt/cassandra/bin/
+
+./nodetool info
+
+/opt/cassandra/bin/nodetool status | egrep "Data|^DN"
+./nodetool status | grep 10.40.84.1
+
+
+
+
+
+
+
+
+
+[montana@node-44a84216f9a2 ~]$ docker exec -it 4a3e99447895 bash
+OCI runtime exec failed: exec failed: container_linux.go:344: starting container process caused "exec: \"bash\": executable file not found in $PATH": unknown
+[montana@node-44a84216f9a2 ~]$
+
+
+[montana@node-44a84216f9a2 ~]$ docker ps | grep cass
+4a3e99447895        k8s-docker.er.svcs.verizon.com/montana-k8s/rancher/mirrored-pause:3.2           "/pause"                 2 days ago          Up 2 days                               k8s_POD_cass-sal-arlington-rack1-26_vzcloud-dc11_4073e338-cf51-48b9-801d-befed399b83a_0
+
+
+
+
+
+
+Anil Kumar Reddy Bedadhala 9:14 AM
+[montana@node-001e679c3cb8 ~]$ docker ps -a |grep cass
+bba088f7cc3f        c570719f92ff                                                                           "/bin/sh -cx 'if [ \"…"   2 weeks ago         Up 2 weeks                                   k8s_cass-sal_cass-sal-primary-rack3-6_vzcloud-dc11_68634f54-ef5f-4a1c-8dc7-021187ff1e62_0
+2064d75b7bdc        k8s-docker.er.svcs.verizon.com/montana-k8s/rancher/mirrored-pause:3.1                  "/pause"                  2 weeks ago         Up 2 weeks                                   k8s_POD_cass-sal-primary-rack3-6_vzcloud-dc11_68634f54-ef5f-4a1c-8dc7-021187ff1e62_0
+[montana@node-001e679c3cb8 ~]$ docker exec -it 2064d75b7bdc  /opt/cassandra/bin/nodetool status
+OCI runtime exec failed: exec failed: container_linux.go:344: starting container process caused "exec: \"/opt/cassandra/bin/nodetool\": stat /opt/cassandra/bin/nodetool: no such file or directory": unknown
+[montana@node-001e679c3cb8 ~]$ docker exec -it 2064d75b7bdc sh
+OCI runtime exec failed: exec failed: container_linux.go:344: starting container process caused "exec: \"sh\": executable file not found in $PATH": unknown
+[montana@node-001e679c3cb8 ~]$ docker exec -it 2064d75b7bdc bash
+OCI runtime exec failed: exec failed: container_linux.go:344: starting container process caused "exec: \"bash\": executable file not found in $PATH": unknown
+[montana@node-001e679c3cb8 ~]$
+
+To start cassandra three services:
+ # /opt/cassandra/bin/nodetool enablegossip
+ # /opt/cassandra/bin/nodetool enablethrift
+ # /opt/cassandra/bin/nodetool enablebinar
+ 
+  /opt/cassandra/bin/nodetool enable
+
+Venkateswara Reddy (Venkateswara) Mukkamalla  18:25
+[root@node-001e67f8b132 bin]# ./nodetool info
+ID           : 87d75a26-69a1-4907-b290-96903a3ab5a5
+Gossip active     : true
+Thrift active     : true
+Native Transport active: false
+
+

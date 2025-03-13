@@ -1,0 +1,13 @@
+
+To check bios_version: need to login node and exectute the below command.
+# cat /sys/class/dmi/id/bios_version
+
+
+I saw the sheet. you've checked all versions right
+
+
+
+
+
+Key Highlights
+https://www.tothenew.com/cloud-devops/cloud-managed-services

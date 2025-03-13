@@ -1,0 +1,341 @@
+
+
+perryman-prov: 
+=============
+docker run -it --rm -e RANCHER_SERVER=vcos-rancher-stg.verizon.com k8s-docker.er.svcs.verizon.com/montana/k8s-utils:relv8.1.0.0-b5-t080121-ef5038f
+
+vz.id:
+pass:
+
+CURRENT   NAME                    CLUSTER                 AUTHINFO       NAMESPACE
+          local                   local                   rancher-ldap
+          perryman                perryman                rancher-ldap
+          perryman-platformsvcs   perryman-platformsvcs   rancher-ldap
+          rocklin                 rocklin                 rancher-ldap
+          rocklin-platformsvcs    rocklin-platformsvcs    rancher-ldap
+          rocklin-test            rocklin-test            rancher-ldap
+#  kubectl config get-contexts
+#  kubectl config use-context
+
+twinsburg-prov:
+===============
+docker run -it --rm -e RANCHER_SERVER=vcos-rancher.verizon.com k8s-docker.er.svcs.verizon.com/montana/k8s-utils:relv8.1.0.0-b5-t080121-ef5038f
+vz.id:
+pass:
+
+kubectl config get-contexts
+CURRENT   NAME                     CLUSTER                  AUTHINFO       NAMESPACE
+          arlington                arlington                rancher-ldap
+          arlington-platformsvcs   arlington-platformsvcs   rancher-ldap
+          local                    local                    rancher-ldap
+          omaha                    omaha                    rancher-ldap
+          omaha-platformsvcs       omaha-platformsvcs       rancher-ldap
+          perryman-prod            perryman-prod            rancher-ldap
+          twinsburg                twinsburg                rancher-ldap
+          twinsburg-platformsvcs   twinsburg-platformsvcs   rancher-ldap
+
+
+#  kubectl config get-contexts
+#  kubectl config use-context
+
+magellan-prov:
+==============
+docker run -it --rm -e RANCHER_SERVER=vcos-k8s-stg.verizon.com k8s-docker.er.svcs.verizon.com/montana/k8s-utils:relv8.1.0.0-b5-t080121-ef5038f
+vz.id:
+pass:
+kubectl config get-contexts
+CURRENT   NAME                    CLUSTER                 AUTHINFO       NAMESPACE
+          local                   local                   rancher-ldap
+          magellan-platformsvcs   magellan-platformsvcs   rancher-ldap
+          rke-dev                 rke-dev                 rancher-ldap
+          rke-master              rke-master              rancher-ldap
+          rke-stg                 rke-stg                 rancher-ldap
+          rke-stg2                rke-stg2                rancher-ldap
+
+#  kubectl config get-contexts
+#  kubectl config use-context
+
+
+Kube commands:
+
+# k9s -n vzcloud-dc13
+# kubectl get pods --all-namespaces
+# kubectl get pods -o wide --all-namespaces |grep mariadb | awk ‘{print $8 }’
+
+# kubectl -n platform describe po mon-smtp-proxy
+
+
+
+Hung docker on a bunch of magellan k8s rke-stg nodes::
+# kubectl --context rke-stg get events -n vzcloud -o json | jq -r '.items[] | select(.message | contains("context deadline")) | .source.host' | sort | wc -l
+
+
+
+/work $ kubectl get nodes
+	The connection to the server localhost:8080 was refused - did you specify the right host or port?
+/work $ kubectl config use-context rocklin
+	Switched to context "rocklin".
+	
+/work $ kubectl get nodes
+
+
+k9s 
+:context - select a context
+:ns - select a namespace
+:pods - view pods
+:dp - view deployments
+:sts - view statefulsets
+:pv - view persistent volumes
+:pvc - view persisten volume claims
+
+ctrl-a - view all resource types...each of these is a "colon" command in k9s
+
+
+DockerHung:
+-----------
+Restart docker and container service
+
+sudo systemctl restart containerd && sudo systemctl restart docker
+
+sudo systemctl restart docker.service
+
+
+
+
+
+
+
+
+============
+kubectl config get-contexts
+kubectl --context  get events -n vzcloud -o json | jq -r '.items[] | select(.message | contains("context deadline")) | .source.host' | sort 
+
+
+kubectl drain 10.132.11.1 ignore-daemonsets
+
+Magellan resolving hung nodes steps to be followed(One node at a time only):
+
+kubectl config use-context rke-stg
+1. Drain command
+kubectl drain 10...1 ignore-daemonsets
+2. Restart docker and container service
+
+sudo systemctl restart containerd && sudo systemctl restart docker
+sudo systemctl restart docker.service
+
+3. Schedule node to active
+kubectl uncordon 10...1
+kubectl uncordon - Marks node as schedulable
+The changes take time to reflect, somewhere between half to an hour
+
+
+re moni
+
+
+
+kubectl cordon
+
+
+kubectl drain 10.158.28.1 ignore-daemonsets
+
+
+
+
+
+
+
+
+
+
+
+
+Mail: https://mail.google.com/mail/u/0/#search/rke-stg+/FMfcgxwKkHlsVXpBdstRmkvxcQxFBBjw
+
+
+1. docker run -it --rm -e RANCHER_SERVER=vcos-k8s-stg.verizon.com k8s-docker.er.svcs.verizon.com/montana/k8s-utils:relv8.1.0.0-b5-t080121-ef5038f
+2. /work $ kubectl config get-contexts
+CURRENT   NAME                       CLUSTER                    AUTHINFO       NAMESPACE
+          kind-btheado-10-149-32-1   kind-btheado-10-149-32-1   rancher-ldap
+          local                      local                      rancher-ldap
+          magellan-platformsvcs      magellan-platformsvcs      rancher-ldap
+          rke-dev                    rke-dev                    rancher-ldap
+          rke-master                 rke-master                 rancher-ldap
+          rke-stg                    rke-stg                    rancher-ldap
+          rke-stg2                   rke-stg2                   rancher-ldap
+3. /work $ kubectl --context rke-stg get events -n vzcloud -o json | jq -r '.items[] | select(.message | contains("context deadline")) | .source.host' | sort | wc -l
+39
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+montana@node-44a84219d259 ~]$ docker ps
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+11:01
+[montana@node-44a84219d259 ~]$ sudo systemctl restart docker.service
+
+[montana@node-44a84219d259 ~]$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND                  CREATED             STATUS              PORTS               NAMES
+eabeb5768fc3        c91d49e6f044                                                                     "/bin/sh -c 'sed -ie…"   6 minutes ago       Up 6 minutes                            k8s_calico-node_calico-node-b88w4_kube-system_e014f409-83a9-4989-bed2-0c1bdfb69f1a_1
+a8d35082bffd        0eaafc5f91f2                                                                     "/bin/sh -cx '# Seei…"   6 minutes ago       Up 6 minutes                            k8s_test_test-all-kubelets-tsfnr_vzcloud_d1067b9c-aaa2-40b9-8b1b-646eeac21edf_2
+2c45c5b5c9f3        k8s-docker.er.svcs.verizon.com/montana-k8s/rancher/pause:3.1                     "/pause"                 6 minutes ago       Up 6 minutes
+
+
+A simple explanation is that it collects information about used resources (memory and CPU)
+# kubectl top nodes
+
+
+
+
+
+
+Here are all the production prometheus alert urls
+arlington-mgmt - https://vcos-rancher.verizon.com/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+arlington - https://vcos-rancher.verizon.com/k8s/clusters/c-pfc8h/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+arlington-platformsvcs - https://vcos-rancher.verizon.com/k8s/clusters/c-2sdqd/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+twinsburg - https://vcos-rancher.verizon.com/k8s/clusters/c-2nrdv/api/v1/namespaces/cattle-monitoring[…]ces/http:rancher-monitoring-prometheus:9090/proxy/alerts
+twinsburg-platformsvcs - https://vcos-rancher.verizon.com/k8s/clusters/c-brb7z/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+omaha - https://vcos-rancher.verizon.com/k8s/clusters/c-zdpdt/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+omaha-platformsvcs - https://vcos-rancher.verizon.com/k8s/clusters/c-5kg2z/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/alerts
+:+1:
+1
+
+
+
+KubeContainerWaiting :
+kubectl get pod -n name_space pod
+kubectl logs pod -n name_space
+
+
+
+
+
+kubectl --context rocklin -n cattle-monitoring-system get jobs -l app=kube-state-metrics
+
+kubectl --context perryman -n vzcloud-dc10 get pods -l app=rancher-monitoring-kubelet
+
+KubeContainerWaiting
+kubectl --context rocklin -n vzcloud-stg2 get pods -l app=smoketest
+
+
+KubeJobFailed
+kubectl --context perryman -n vzcloud-dc10 get jobs -l app=mysqlbackup
+
+
+KubeStatefulSetUpdateNotRolledOut
+kubectl --context perryman -n vzcloud-dc10 get sts cass-mm-primary-rack1 -o yaml | kubectl neat
+
+
+
+
+kubectl --context arlington get nodes -l vcos.verizon.com/rack=26
+
+
+
+
+
+
+
+K9s cli shortcuts:
+==================
+This docker image contains many useful utilities for working with kubernetes.
+
+kubectl - the standard command-line interface for kubernetes
+k9s - excellent terminal UI for interacting with kubernetes
+helm and helm diff
+kustomize - this is built into kubectl as kubectl kustomize and kubectl apply -k, but the standalone command has more functionality and it has diverged since it was integrated into kubectl. The kubectl version won't be updated until at least 1.20.
+kfilt - tool for extracting subsets of kubernetes yaml. Useful when you want only a small portion of the kustomize output
+sops - encrypt secrets so you can store the output in git
+rancher - cli for interacting with rancher API
+rke - command-line tool for create/update of Rancher Kubernetes. We only use this tool for the rancher management cluster. All other clusters are created using rancher.
+calicoctl - command-line tool for configuring the calico CNI
+jq - json manipulation
+kubectl plugins: access-matrix, deprecations, kuttl, kudo, neat
+Ref: https://confluence.verizon.com/display/VCOS/Kubernetes+utilities+docker+image
+10:32
+:context - select a context
+:ns - select a namespace
+:pods - view pods
+:dp - view deployments
+:sts - view statefulsets
+:pv - view persistent volumes
+:pvc - view persisten volume claims
+ctrl-a - view all resource types...each of these is a "colon" command in k9s
+:+1:
+1
+
+
+
+
+
+
+
+
+
+
+237492
+
+
+
+
+
+
+
+
+
+ssh -A vzcloud@10.77.182.119
+password: vzcloud@123
+
+sudo docker run -it --rm -v /home-local/vzcloud:/work -e RANCHER_SERVER=vcos-rancher.verizon.com  k8s-docker.gr.svcs.verizon.com/montana/k8s-utils:relv8.1.0.0-b5-t080121-ef5038f
+
+NameSpace:
+==========
+Project: platform
+-----------------
+metallb-system
+platform
+
+Project: storage
+----------------
+storage
+
+Project: System
+---------------
+cattle-gatekeeper-system
+cattle-logging-system
+cattle-monitoring-system
+cattle-system
+fleet-system
+kube-node-lease
+Active
+kube-public
+Active
+kube-system
+Active
+security-scan
+
+Project: vzcloud
+-----------------
+vzcloud-arl-core
+vzcloud-dc11
+Active
+vzcloud-dc13
+
+Not in a Project
+-----------------
+cattle-dashboards
+cis-operator-system
+default
+elastic-system
+sysdig-agent

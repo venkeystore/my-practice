@@ -1,0 +1,548 @@
+
+
+
+nodelevel:
+==========
+KubeNodeUnreachable
+KubeNodeNotReady
+NodeMissingFromK8s
+NodeCordoned
+Ready
+NodeNetworkInterfaceFlapping
+NodeNetworkBondingDegraded
+NodeFilesystemAlmostOutOfSpace
+KubeNodeReadinessFlapping
+KubeletHealthState
+NorthboundStale
+
+Kube workloads:
+==============
+KubeContainerWaiting
+KubeDeploymentReplicasMismatch
+KubeJobCompletion
+KubeJobFailed
+NodeHasIntegrityFailure
+KubeStatefulSetUpdateNotRolledOut
+KubeStatefulSetReplicasMismatch
+KubePersistentVolumeFillingUp
+KubePodNotReady
+KubePodCrashLooping
+
+
+Cluster level:
+=============
+NodePendingCSR
+TargetDown
+ClusterOperatorDegraded
+ClusterOperatorDown
+
+
+
+10.0.137.1=NodeMissingFromK8s
+10.0.139.1=NodeMissingFromK8s
+10.1.157.1=NodeMissingFromK8s
+10.1.159.1=NodeMissingFromK8s
+10.1.161.1=NodeMissingFromK8s
+10.11.141.1=NodeMissingFromK8s
+10.2.135.1=NodeMissingFromK8s
+10.2.145.1=NodeMissingFromK8s
+10.2.157.1=NodeMissingFromK8s
+10.37.31.1=NodeMissingFromK8s
+10.37.39.1=NodeMissingFromK8s
+10.37.43.1=NodeMissingFromK8s
+10.47.43.1=NodeMissingFromK8s
+10.8.137.1=NodeMissingFromK8s
+10.8.147.1=NodeMissingFromK8s
+
+
+
+
+Datacenters:
+============
+Arlington
+Twinsburg
+Omaha
+Perryman
+Magellan
+
+Each datacenter containes again these clusters:
+```````````````````````````````````````````````
+arlington-ocp
+arlington-ocp2
+arlington-mgmt
+arlington-platformsvcs
+
+twinsburg-ocp
+twinsburg-ocp2
+twinsburg-platformsvcs
+
+omaha-ocp
+omaha-ocp2
+omaha-platformsvcs
+
+perryman-ocp-stg
+perryman-prod
+perryman-ocp2
+perryman-mgmt
+perryman-platformsvcs
+
+magellan-ocp
+magellan-ocp2
+magellan-ocp3
+magellan-platformsvcs
+
+
+OpenShift Node Status:
+=====================
+KubeNodeUnreachable
+KubeNodeNotReady
+NodeMissingFromK8s
+NodeCordoned
+Ready
+NodeNetworkInterfaceFlapping
+NodeNetworkBondingDegraded
+NodeFilesystemAlmostOutOfSpace
+KubeNodeReadinessFlapping
+KubeletHealthState
+NorthboundStale
+Kubernetes Workloads:
+
+Kube workloads:
+==============
+KubeContainerWaiting
+KubeDeploymentReplicasMismatch
+KubeJobCompletion
+KubeJobFailed
+NodeHasIntegrityFailure
+KubeStatefulSetUpdateNotRolledOut
+KubeStatefulSetReplicasMismatch
+KubePersistentVolumeFillingUp
+KubePodNotReady
+KubePodCrashLooping
+Cluster-Level Issues:
+
+Cluster level:
+=============
+NodePendingCSR
+TargetDown
+ClusterOperatorDegraded
+ClusterOperatorDown
+
+Networking Section:
+===================
+troubleshooting network switches & racks:
+coordinating with the DC team (ETMS/ DCRM tickets )
+managing DHCP configurations (stash DHCP updation with new mac ID if you replaceing the switch)
+reimaging switches via ONIE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Cluster Distribution:
+Arlington:  datacenter have number of nodes
+`````````
+arlington-ocp
+arlington-ocp2
+arlington-mgmt
+arlington-platformsvcs
+
+Twinsburg:  datacenter have number of nodes
+```````````
+twinsburg-ocp
+twinsburg-ocp2
+twinsburg-mgmt
+twinsburg-platformsvcs
+
+Omaha: datacenter have number of nodes
+``````
+omaha-ocp
+omaha-ocp2
+omaha-platformsvcs
+
+Perryman: datacenter have number of nodes
+`````````
+perryman-ocp-stg
+perryman-prod
+perryman-ocp2
+perryman-mgmt
+perryman-platformsvcs
+
+Magellan: datacenter have number of nodes
+`````````
+magellan-ocp
+magellan-ocp2
+magellan-ocp3
+magellan-platformsvcs
+
+
+Networking Section:
+===================
+Datacenter:
+Arlington >> Racks & Rack Units about nodes
+twinsburg >> Racks & Rack Units about nodes
+Omaha >> Racks & Rack Units about nodes
+Magellan >> Racks & Rack Units about nodes
+
+Each data center maintains its own switch and rack units, with a dedicated switch inventory sheet for each datacenter. The inventory is segmented accordingly for better organization.
+
+Troubleshooting Network Switches & Racks:
+Collaborating with the data center team (ETMS/DCRM tickets) for issue resolution, follow-up with DC team; Reimaging switches using ONIE (If require)
+Managing DHCP configurations, including updating the stash DHCP with a new MAC ID when replacing a switch.
+
+
+
+
+provider "aws" {
+  region = "us-east-1"
+}
+resource "aws_vpc" "main_vpc" {
+  cidr_block = "10.0.0.0/16"
+}
+resource "aws_subnet" "public_subnet" {
+  vpc_id            = aws_vpc.main_vpc.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "us-east-1a"
+}
+resource "aws_internet_gateway" "main_igw" {
+  vpc_id = aws_vpc.main_vpc.id
+}
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.main_vpc.id
+}
+resource "aws_route_table_association" "public_association" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_rt.id
+}
+resource "aws_security_group" "web_sg" {
+  vpc_id = aws_vpc.main_vpc.id
+
+  # Allow HTTP (80) and SSH (22) Access
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+resource "aws_instance" "web_server" {
+  ami             = "ami-12345678"
+  instance_type   = "t2.micro"
+  subnet_id       = aws_subnet.public_subnet.id
+  security_groups = [aws_security_group.web_sg.id]
+}
+resource "aws_s3_bucket" "app_bucket" {
+  bucket = "my-app-bucket-terraform"
+}
+resource "aws_db_instance" "app_db" {
+  allocated_storage = 20
+  engine            = "mysql"
+  instance_class    = "db.t2.micro"
+  username         = "admin"
+  password         = "password123"
+  skip_final_snapshot = true
+}
+resource "aws_route53_record" "app_dns" {
+  zone_id = "Z123456ABCDEFG" # Replace with your hosted zone ID
+  name    = "app.example.com"
+  type    = "A"
+  ttl     = 300
+  records = [aws_instance.web_server.public_ip]
+}
+
+
+
+
+
+
+
+
+
+# Create Security Group
+resource "aws_security_group" "web_sg" {
+  vpc_id = aws_vpc.main_vpc.id
+
+  # Allow HTTP (80) and SSH (22) Access
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
+# Create an EC2 Instance
+resource "aws_instance" "web_server" {
+  ami             = "ami-12345678"
+  instance_type   = "t2.micro"
+  subnet_id       = aws_subnet.public_subnet.id
+  security_groups = [aws_security_group.web_sg.id]
+}
+
+
+
+How does resource aws_instance know security_groups that if you not yet created Security Group ID and not know the ID to the resource "aws_instance".
+
+
+for i in $(cat hosts.txt); do  kubectl -n openshift-file-integrity get cm aide-node-fileintegrity-$i-failed -o json | jq -r .data.integritylog ; done
+
+
+node-199-8.vcos.verizon.com
+node-206-10.vcos.verizon.com
+node-206-9.vcos.verizon.com
+node-209-18.vcos.verizon.com
+
+
+
+
+
+https://jira.verizon.com/browse/
+
+https://jira.verizon.com/browse/VCOSO-11348
+https://jira.verizon.com/browse/VCOSO-11514
+https://jira.verizon.com/browse/VCOSO-11667
+https://jira.verizon.com/browse/VCOSO-11371
+https://jira.verizon.com/browse/VCOSO-11372
+https://jira.verizon.com/browse/VCOSO-11373
+https://jira.verizon.com/browse/VCOSO-8282
+https://jira.verizon.com/browse/VCOSO-11373
+https://jira.verizon.com/browse/VCOSO-11152
+https://jira.verizon.com/browse/VCOSO-11373
+https://jira.verizon.com/browse/VCOSO-9014
+https://jira.verizon.com/browse/VCOSO-9015
+https://jira.verizon.com/browse/VCOSO-8525
+https://jira.verizon.com/browse/VCOSO-11675
+https://jira.verizon.com/browse/VCOSO-7903
+
+
+
+Here are the Jira tickets with hyperlinks:
+
+- [VCOSO-11348](https://jira.verizon.com/browse/VCOSO-11348)
+- [VCOSO-11514](https://jira.verizon.com/browse/VCOSO-11514)
+- [VCOSO-11667](https://jira.verizon.com/browse/VCOSO-11667)
+- [VCOSO-11371](https://jira.verizon.com/browse/VCOSO-11371)
+- [VCOSO-11372](https://jira.verizon.com/browse/VCOSO-11372)
+- [VCOSO-11373](https://jira.verizon.com/browse/VCOSO-11373)
+- [VCOSO-8282](https://jira.verizon.com/browse/VCOSO-8282)
+- [VCOSO-11152](https://jira.verizon.com/browse/VCOSO-11152)
+- [VCOSO-9014](https://jira.verizon.com/browse/VCOSO-9014)
+- [VCOSO-9015](https://jira.verizon.com/browse/VCOSO-9015)
+- [VCOSO-8525](https://jira.verizon.com/browse/VCOSO-8525)
+- [VCOSO-11675](https://jira.verizon.com/browse/VCOSO-11675)
+- [VCOSO-7903](https://jira.verizon.com/browse/VCOSO-7903)
+
+You had **VCOSO-11373** repeated three times; I listed it only once. Let me know if you need any modifications! 😊
+
+
+
+
+
+intrest per month in rupees = 1.5
+Principle.Amount        Given.Date   Till Date
+1000000                 3/15/2022     3/2/2025
+
+
+=A2 * (1 + (1.5 / 100)) ^ (INT(DAYS(DATE(B2), DATE(C2)) / 365)) - A2
+
+
+
+
+
+flm | grep 10.1.157.1
+flm | grep 10.1.159.1
+flm | grep 10.1.161.1
+
+
+
+
+
+
+
+arlington-ocp    10.10.176.1   Zone5HostSystemdServiceCrashed
+arlington-ocp    10.11.176.1   Zone5HostSystemdServiceCrashed
+arlington-ocp    10.23.22.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.23.28.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.26.22.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.28.22.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.31.22.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.33.23.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.36.22.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.37.15.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.43.13.1    Zone5HostSystemdServiceCrashed
+arlington-ocp    10.47.13.1    Zone5HostSystemdServiceCrashed
+
+arlington-ocp    10.6.34.1     Zone5HostFilesystemDeviceError
+arlington-ocp    10.10.33.1    Zone5HostFilesystemDeviceError
+arlington-ocp    10.1.34.1     Zone5HostFilesystemDeviceError
+
+
+
+
+
+Here is the separated node list:
+
+Zone5HostSystemdServiceCrashed
+- 10.10.176.1
+- 10.11.176.1
+- 10.23.22.1
+- 10.23.28.1
+- 10.26.22.1
+- 10.28.22.1
+- 10.31.22.1
+- 10.33.23.1
+- 10.36.22.1
+- 10.37.15.1
+- 10.43.13.1
+- 10.47.13.1
+Zone5HostFilesystemDeviceError
+- 10.6.34.1
+- 10.10.33.1
+- 10.1.34.1
+
+IP1: 10.1.34.1    Dell               NodeClass: JUMPSERVER StorageService: JUMP_SERVER         NodeModel: Dell
+IP1: 10.10.176.1  Radisys            NodeClass: ZONE5_BE   StorageService: OPENDJ_LDAP         NodeModel: Radisys
+IP1: 10.10.33.1   Dell               NodeClass: NBSERVER   StorageService: NBSERVER            NodeModel: Dell
+IP1: 10.11.176.1  Radisys            NodeClass: ZONE5_BE   StorageService: OPENDJ_LDAP         NodeModel: Radisys
+IP1: 10.23.22.1   Dell            NodeClass: ZONE5      StorageService: NONE                NodeModel: Dell
+IP1: 10.23.28.1   Dell            NodeClass: ZONE5      StorageService: NONE                NodeModel: Dell
+IP1: 10.26.22.1   Dell            NodeClass: ZONE5      StorageService: NONE                NodeModel: Dell
+IP1: 10.28.22.1   Dell            NodeClass: ZONE5      StorageService: NONE                NodeModel: Dell
+IP1: 10.31.22.1   Dell            NodeClass: ZONE5      StorageService: NONE                NodeModel: Dell
+IP1: 10.33.23.1   Dell            NodeClass: ZONE5      StorageService: NONE                NodeModel: Dell
+IP1: 10.36.22.1   Dell            NodeClass: ZONE5      StorageService: NONE                NodeModel: Dell
+IP1: 10.37.15.1   Radisys            NodeClass: ZONE5_BE   StorageService: GR_NODE             NodeModel: Radisys
+IP1: 10.43.13.1   Radisys            NodeClass: ZONE5_BE   StorageService: OPENDJ_LDAP         NodeModel: Radisys
+IP1: 10.43.25.1   Radisys            NodeClass: COMPUTE    StorageService: ELASTICSEARCH       NodeModel: Radisys
+IP1: 10.47.13.1   Radisys            NodeClass: ZONE5_BE   StorageService: GR_NODE             NodeModel: Radisys
+IP1: 10.6.34.1    Dell               NodeClass: NBSERVER   StorageService: NBSERVER            NodeModel: Dell
+
+
+
+11. KubeStatefulSetReplicasMismatch
+===================================
+Description: StatefulSet replicas count does not match the desired state.
+    Debug Steps:
+     Check StatefulSet status:
+     # kubectl -n openshift-monitoring get statefulsets | grep prometheus-k8s
+     # kubectl -n openshift-monitoring describe statefulset prometheus-k8s
+     # kubectl -n platform describe pods -l app=node-exporter-zone5; name=node-exporter-zone5
+     # kubectl -n openshift-monitoring logs <pod-name>
+     # kubectl -n openshift-monitoring get events
+
+
+
+
+nfs-server
+
+
+Description: Deployment replicas count does not match the desired state.
+  Debug Steps:
+   Check deployment status:
+   # kubectl -n platform get deployments | grep  nfs-server
+   Inspect the events for errors:
+   #    kubectl -n platform describe deployment nfs-server
+   #    kubectl -n platform describe pods -l app=nfs-server
+   #    kubectl -n platform logs <pod-name>
+   #    kubectl -n platform get events
+ 
+ 
+
+Pod scheduling failed due to insufficient resources, untolerated taints, and volume node affinity conflicts.
+prometheus-k8s-1                                         0/6     Pending   0          7h21m   <none>          <none>                         <none>           <none>
+
+
+
+
+NFD worker failed due to a whitelist mismatch and an RPC timeout with the NFD master.
+nfd-worker-778ff                          0/1     CrashLoopBackOff   2623 (3m28s ago)   12d   10.172.33.1     node-172-33.vcos.verizon.com   <none>           <none>  Ready
+
+disply device manuinfo
+
+4m29s       Warning   FailedCreate         replicaset/nfs-server-b68f7d556                         Error creating: pods "nfs-server-b68f7d556-" is forbidden: error looking up service account platform/nfs-server: serviceaccount "nfs-server" not found
+
+
+
+
+nfs-server                             0/1     0            0           17d
+
+18m         Warning   FailedCreate         replicaset/nfs-server-b68f7d556                         Error creating: pods "nfs-server-b68f7d556-" is forbidden: error looking up service account platform/nfs-server: serviceaccount "nfs-server" not found
+10m         Warning   FailedCreate         replicaset/nfs-server-b68f7d556                         Error creating: pods "nfs-server-b68f7d556-97n54" is forbidden: failed quota: compute-resources: must specify limits.cpu for: nfs-server; limits.memory for: nfs-server; requests.cpu for: nfs-server; requests.memory for: nfs-server
+8m19s       Warning   FailedCreate         replicaset/nfs-server-b68f7d556                         Error creating: pods "nfs-server-b68f7d556-tdldb" is forbidden: failed quota: compute-resources: must specify limits.cpu for: nfs-server; limits.memory for: nfs-server; requests.cpu for: nfs-server; requests.memory for: nfs-server
+2m49s       Normal    ScalingReplicaSet    deployment/nfs-server                                   Scaled up replica set nfs-server-5786b67d6 to 1
+
+
+
+
+
+
+iperf-deployment; iperf-server
+iperf-client
+zabbix-partition-db-network-29022540; zabbix-partition-db-network-29023980; zabbix-partition-db-vzcloud-28892880; zabbix-partition-db-vzcloud-28894320
+zabbix-graph-update-vzcloud-29024680; zabbix-graph-update-vzcloud-29024700; zabbix-partition-db-network-29022540; zabbix-partition-db-network-29023980; zabbix-partition-db-vzcloud-28892880 and 1 more...
+mariadb-mdb3-zabbix-0,
+mariadb-mdb3-zabbix
+cleaner-28899442-p26f6,cleaner
+cleaner-28899442
+dcgm-exporter
+jitt-mongo-export-job-28998487
+jitt-mongo-export-job-28998487
+mariadb-mdb1-user-0,; vantrix-0,
+mariadb-mdb1-user; vantrix; zookeeper-internal
+mariadb-mdb1-user
+
+
+
+
+node-30-102.vcos.verizon.com  Ready           worker         2y136d  v1.28.11+add48d0
+node-30-65.vcos.verizon.com  Ready           worker         422d   v1.28.11+add48d0
+node-30-66.vcos.verizon.com  Ready           worker         557d   v1.28.11+add48d0
+node-30-67.vcos.verizon.com  Ready           worker         2y154d  v1.28.11+add48d0
+node-30-69.vcos.verizon.com  Ready           worker         2y165d  v1.28.11+add48d0
+node-30-70.vcos.verizon.com  Ready           worker         396d   v1.28.11+add48d0
+node-30-71.vcos.verizon.com  Ready           worker         494d   v1.28.11+add48d0
+node-30-72.vcos.verizon.com  Ready           worker         494d   v1.28.11+add48d0
+node-30-73.vcos.verizon.com  Ready           worker         2y91d  v1.28.11+add48d0
+node-30-74.vcos.verizon.com  Ready           worker         558d   v1.28.11+add48d0
+node-30-77.vcos.verizon.com  Ready           worker         508d   v1.28.11+add48d0
+node-30-79.vcos.verizon.com  Ready           worker         503d   v1.28.11+add48d0
+node-30-83.vcos.verizon.com  Ready           worker         310d   v1.28.11+add48d0
+node-30-84.vcos.verizon.com  Ready           worker         151d   v1.28.11+add48d0
+node-30-86.vcos.verizon.com  Ready           worker         151d   v1.28.11+add48d0
+node-30-87.vcos.verizon.com  Ready           worker         2y155d  v1.28.11+add48d0
+node-30-88.vcos.verizon.com  Ready           worker         151d   v1.28.11+add48d0
+node-30-89.vcos.verizon.com  Ready           worker         422d   v1.28.11+add48d0
+node-30-90.vcos.verizon.com  Ready           worker         2y170d  v1.28.11+add48d0
+node-30-91.vcos.verizon.com  Ready           worker         2y170d  v1.28.11+add48d0
+node-30-92.vcos.verizon.com  Ready           worker         2y193d  v1.28.11+add48d0
+node-30-93.vcos.verizon.com  Ready           worker         509d   v1.28.11+add48d0
+node-30-94.vcos.verizon.com  Ready           worker         509d   v1.28.11+add48d0
+node-30-95.vcos.verizon.com  Ready           worker         422d   v1.28.11+add48d0
+node-30-96.vcos.verizon.com  Ready           worker         2y192d  v1.28.11+add48d0
+

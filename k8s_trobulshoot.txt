@@ -1,0 +1,836 @@
+Troubleshooting Commands for Kubernetes and OpenShift:
+
+If the previous regular expression isn't working in Xcode, try this alternative method:
+=======================================================================================
+Find field:
+\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b
+Replace field:
+$1
+
+kubectl get node -l vcos.verizon.com/StorageService=MARIADB 
+
+
+
+#To login prove servers;
+alias arlington='ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.55.130" devops@10.6.33.1'
+alias perryman='ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.55.130" devops@10.136.33.1'
+alias twinsburg='ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.55.130" devops@10.13.66.1'
+alias magellan='ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.55.130" devops@10.161.33.1'
+alias omaha='ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.55.130" devops@10.212.33.1'
+# Node login;
+alias node='read -p "Enter Ip:" host && cd /home/mobaxterm/.ssh && ssh -i id_rsa  -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.55.130" montana@$host'
+alias ocpnode='read -p "Enter Ip:" host && ssh -i id_rsa  -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.55.130" mukkve7@$host'
+alias oc_cluster='ssh mukkve7@140.223.55.130'
+alias oc_cluster1='ssh mukkve7@arlingtondc-lkjump'
+
+#nb servers:
+alias arlington-nbserver-new='ssh -A ipteam@140.223.0.64'
+alias arlington-nbserver-standby='ssh -A ipteam@140.223.2.28'
+alias omaha-nbserver-new='ssh -A ipteam@140.223.71.131'
+alias omaha-nbserver-standby='ssh -A ipteam@140.223.71.165'
+alias perryman-nbserver-new='ssh -A ipteam@140.223.55.131'
+alias perryman-standby='ssh -A ipteam@140.223.54.142'
+alias twinsburg-nbserver-new='ssh -A ipteam@140.223.87.254'
+alias twinsburg-nbserver-standby='ssh -A ipteam@140.223.86.196'
+
+
+
+metallb-system:
+kubectl get configmap -n metallb-system config -o yaml
+
+
+
+
+NodeHasIntegrityFailure:
+========================
+kubectl -n openshift-file-integrity get cm aide-node-fileintegrity-node-151-33.vcos.verizon.com-failed -o json | jq -r .data.integritylog | grep -E "(Added entries:|Changed entries: |Removed entries:)" -A 10
+
+#script for node-fileintegrity;
+for i in $(cat hosts.txt); do
+  failed_cms=$(for i in $i;  do kubectl -n openshift-file-integrity get cm | grep $i | awk {'print $1}' ; done)
+  cm_paths=$(for i in $failed_cms;  do echo "$i" && kubectl -n openshift-file-integrity get cm $i -o json | jq -r .data.integritylog | grep -E "(Added entries:|Changed entries: |Removed entries:)" -A 15; done)
+  echo "$cm_paths"
+done
+
+
+ClusterOperatorDegraded:
+========================
+kubectl get co
+kubectl describe co co_name
+
+If any co "Failed to resync 4.13.8 because: Required MachineConfigPool 'master' is paused and can not sync until it is unpaused"
+
+# oc get machineconfigpool master -o yaml | grep paused
+
+kubectl get machineconfigpool master -o yaml | grep paused
+
+If the MachineConfigPool is paused, unpause it to allow syncing;
+
+# oc adm uncordon machineconfigpool/master
+kubectl adm uncordon machineconfigpool/master
+
+Watch for any events related to the resync and MachineConfigPool;
+kubectl get events --watch
+
+#Refer to official documentation or support resources for further troubleshooting;
+kubectl explain machineconfigpool
+
+#To get machineconfigpool
+kubectl get mcp
+
+
+
+
+1. Drain and Cordon the node before applying errata, 
+     kubectl drain <node> --ignore-daemonsets
+   kubectl cordon <node>
+
+
+
+
+
+
+
+
+Zone5HostUnusualDiskIo :
+========================
+dmesg -T | grep -i "error\|disk\|io"
+tail -f /var/log/messages | grep -i "error\|disk"
+
+
+
+tcp dump;
+==========
+# Access Root and Set Up Toolbox Configuration (In the node)
+sudo /usr/bin/bash -c "echo REGISTRY=k8s-docker.gr.svcs.verizon.com >/root/.toolboxrc; echo TOOLBOX_NAME=toolbox-mukkve7 >>/root/.toolboxrc; echo IMAGE=rhel8/support-tools >>/root/.toolboxrc; /usr/bin/toolbox" 
+
+
+# Change Root to Host
+chroot /host
+
+# Login to Podman Registry
+podman login platform.er.svcs.verizon.com
+
+# Locate the Desired Container Process
+crictl ps | grep a9077f78c6d44
+
+# Inspect Container to Get Network Namespace Path
+crictl inspect -o json a9077f78c6d44 | jq -r '.info.runtimeSpec.linux.namespaces[] | select(.type=="network") | .path'
+
+# Run Podman with TCPDump in the Specified Network Namespace
+podman run --rm -v /tmp:/tmp --privileged --net ns:/var/run/netns/06365050-53c4-41df-824a-1706346a6257  platform.er.svcs.verizon.com/montana/mon-alpine-toolbox:3 tcpdump -w /tmp/internal.pcap -i eth0
+
+# Reference
+# For further details, refer to the Jira ticket: https://jira.verizon.com/browse/VCOSO-8544
+
+# you have to run the command sftp that where you want keep the file
+sftp mukkve7@10.220.9.1
+sftp> get internal.pcap
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+________
+        |
+SCripts:|
+________|
+
+-------------------------------------------------------------------------------------------------------------
+The script prompts for a namespace and pod name, retrieves container names, and prints each one sequentially |
+--------------------------------------------------------------------------------------------------------------
+#read -p "Name_Space:" name_space
+#read -p "Pod_Name:" pod_name
+#kubectl -n $name_space get pods -o jsonpath='{range .items[*]}{"\n"}{.metadata.name}{"\t"}{.metadata.namespace}{"\t"}{range .spec.containers[*]}{.name}{"=>"}{.image}{","}{end}{end}'|sort|column -t | grep $pod_name | awk -v RS=,  '{print NR "." $0}'
+
+
+
+
+read -p "Name_Space:" name_space
+read -p "Pod_Name:" pod_name
+#pod_name="group-sync-operator-controller-manager-f868bd88f-m8vvj" # Replace with your actual pod name
+containers=$(kubectl -n $name_space get pod "$pod_name" -o jsonpath='{.spec.containers[*].name}')
+container_count=1
+for container in $containers; do
+  echo "Container $container_count: $container"
+  ((container_count++))
+done
+
+
+
+
+
+KubeContainerWaiting:
+====================
+
+for i in $(cat hosts.txt);  do kubectl -n openshift-file-integrity get  po -o wide | grep $i ; done
+
+for i in $(cat hosts.txt);  do kubectl get nodes | grep $i ; done
+
+
+-rw-r--r--. 1 mukkve7 40661 120 Jul  4 11:46 name_space
+-rw-r--r--. 1 mukkve7 40661 116 Jul  8 10:11 hosts.txt
+-rw-r--r--. 1 mukkve7 40661  71 Jul  8 10:23 pods
+while IFS= read -r namespace; do while IFS= read -r pod; do while IFS= read -r node; do kubectl -n "$namespace" get pods -o wide | grep "$pod" | grep "$node"; done < hosts.txt; done < pods; done < name_spaces
+
+
+------------------------------------------------------------------------------------------------------------------------
+The script prompts for a namespace, iterates over pod names, retrieves node names, fetches statuses, and prints details.|
+------------------------------------------------------------------------------------------------------------------------
+read -p "Name_Space:" name_space
+#read -p "Pod_Name:" pod_name
+for i in $(cat pods); do
+  node_name=$(kubectl -n $name_space get pods -o wide | grep $i | awk -v RS=" "  '{print $0}' | grep '.vcos.verizon.com')
+  node_status=$(kubectl get nodes | grep $node_name | awk '{print $2}')
+  echo "$(kubectl -n $name_space get pods -o wide | grep $i)   $node_status"
+done
+
+
+
+
+
+# Assuming your data is stored in a file named 'data.txt'
+cat log | awk -F ',' '{
+    for (i=1; i<=NF; i++) {
+        if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+        else if ($i ~ /^ITRackTitle=/) { ITRackTitle = substr($i, 13) }
+        else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 10) }
+        else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 10) }
+        else if ($i ~ /^StorageService=/) { StorageService = substr($i, 15) }
+        else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+    }
+    print "IP1:", IP1, "ITRackTitle:", ITRackTitle, "NodeModel:", NodeModel, "NodeClass:", NodeClass, "StorageService:", StorageService, "K8sCluster:", K8sCluster
+}'
+
+
+
+for i in $(cat hosts.txt); do
+# Assuming your data is stored in a file named 'data.txt'
+flm | grep $i | awk -F ',' '{
+    for (i=1; i<=NF; i++) {
+        if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+        else if ($i ~ /^ITRackTitle=/) { ITRackTitle = substr($i, 13) }
+        else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 10) }
+        else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 10) }
+        else if ($i ~ /^StorageService=/) { StorageService = substr($i, 15) }
+        else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+    }
+    print "IP1:", IP1, "ITRackTitle:", ITRackTitle, "NodeModel:", NodeModel, "NodeClass:", NodeClass, "StorageService:", StorageService, "K8sCluster:", K8sCluster
+}'
+done
+
+
+cat log | awk -F ',' '{
+    for (i=1; i<=NF; i++) {
+        if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+        else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }		
+        else if ($i ~ /^ITRackTitle=/) { ITRackTitle = substr($i, 13) }
+        else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 10) }
+        else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 10) }
+        else if ($i ~ /^StorageService=/) { StorageService = substr($i, 15) }
+        else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+    }
+    print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "ITRackTitle:", ITRackTitle, "NodeModel:", NodeModel, "NodeClass:", NodeClass, "StorageService:", StorageService, "K8sCluster:", K8sCluster
+}'
+
+
+
+
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }
+else if ($j ~ /^rack=/) { rack = substr($j, 6) }
+else if ($i ~ /^ITRackTitle=/) { ITRackTitle = substr($i, 13) }
+else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 11) }
+else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 11) }
+else if ($i ~ /^StorageService=/) { StorageService = substr($i, 16) }
+else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+}
+print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "rack:", rack, "ITRackTitle:", ITRackTitle, "NodeModel:", NodeModel, "NodeClass:", NodeClass, "StorageService:", StorageService, "K8sCluster:", K8sCluster
+}';  done
+
+
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }
+else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 11) }
+else if ($i ~ /^StorageService=/) { StorageService = substr($i, 16) }
+else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 11) }
+
+}
+print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "NodeClass:", NodeClass, "StorageService:", StorageService, "NodeModel:", NodeModel
+}';  done
+
+
+
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }
+else if ($j ~ /^NodeModel=/) { NodeModel = substr($i, 11) }
+}
+print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "NodeModel:", NodeModel
+}';  done
+
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }
+else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 11) }
+else if ($j ~ /^K8s=/) { K8s = substr($j, 5) }
+else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+
+}
+print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "NodeModel:", NodeModel, "K8s:", K8s, "K8sCluster:", K8sCluster
+}';  done
+
+
+
+
+
+
+
+
+
+
+
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }
+else if ($j ~ /^K8s=/) { K8s = substr($j, 5) }
+else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+
+}
+print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "K8s:", K8s, "K8sCluster:", K8sCluster
+}';  done
+
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }
+else if ($i ~ /^ITRackTitle=/) { ITRackTitle = substr($i, 13) }
+else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 11) }
+else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 11) }
+else if ($i ~ /^StorageService=/) { StorageService = substr($i, 16) }
+else if ($i ~ /^K8sCluster=/) { K8sCluster = substr($i, 12) }
+else if ($i ~ /^HwSupport=/) { HwSupport = substr($i, 11) }
+}
+print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "ITRackTitle:", ITRackTitle, "NodeModel:", NodeModel, "NodeClass:", NodeClass, "StorageService:", StorageService, "K8sCluster:", K8sCluster, "HwSupport:" HwSupport
+}';  done
+
+
+slot
+rack
+mac
+type
+subtype
+env
+REGION
+ITRackTitle
+ITName
+NodeModel
+NodeClass
+ExtNetName
+StorageConfig
+StorageService
+StorageRole
+StorageVendor
+BondSlave2Mac
+K8s
+K8sCluster
+IP1
+NETMASK
+ipmi_ip
+SVCTAG
+
+
+
+
+for i in $(cat hosts.txt); do
+  flm | grep $i > log
+  cat log | awk -F ',' '{
+    for (j = 1; j <= NF; j++) {
+      if ($j ~ /^slot=/) { slot = substr($j, 6) }
+      else if ($j ~ /^rack=/) { rack = substr($j, 6) }
+      else if ($j ~ /^mac=/) { mac = substr($j, 5) }
+      else if ($j ~ /^type=/) { type = substr($j, 6) }
+      else if ($j ~ /^subtype=/) { subtype = substr($j, 9) }
+      else if ($j ~ /^env=/) { env = substr($j, 5) }
+      else if ($j ~ /^REGION=/) { REGION = substr($j, 8) }
+      else if ($j ~ /^ITRackTitle=/) { ITRackTitle = substr($j, 13) }
+      else if ($j ~ /^ITName=/) { ITName = substr($j, 8) }
+      else if ($j ~ /^NodeModel=/) { NodeModel = substr($j, 11) }
+      else if ($j ~ /^NodeClass=/) { NodeClass = substr($j, 11) }
+      else if ($j ~ /^ExtNetName=/) { ExtNetName = substr($j, 12) }
+      else if ($j ~ /^StorageConfig=/) { StorageConfig = substr($j, 15) }
+      else if ($j ~ /^StorageService=/) { StorageService = substr($j, 16) }
+      else if ($j ~ /^StorageRole=/) { StorageRole = substr($j, 13) }
+      else if ($j ~ /^StorageVendor=/) { StorageVendor = substr($j, 15) }
+      else if ($j ~ /^BondSlave2Mac=/) { BondSlave2Mac = substr($j, 15) }
+      else if ($j ~ /^K8s=/) { K8s = substr($j, 5) }
+      else if ($j ~ /^K8sCluster=/) { K8sCluster = substr($j, 12) }
+      else if ($j ~ /^IP1=/) { IP1 = substr($j, 5) }
+      else if ($j ~ /^NETMASK=/) { NETMASK = substr($j, 9) }
+      else if ($j ~ /^ipmi_ip=/) { ipmi_ip = substr($j, 9) }
+      else if ($j ~ /^SVCTAG=/) { SVCTAG = substr($j, 8) }
+    }
+    print "slot:", slot, "rack:", rack, "mac:", mac, "type:", type, "subtype:", subtype, \
+          "env:", env, "REGION:", REGION, "ITRackTitle:", ITRackTitle, "ITName:", ITName, \
+          "NodeModel:", NodeModel, "NodeClass:", NodeClass, "ExtNetName:", ExtNetName, \
+          "StorageConfig:", StorageConfig, "StorageService:", StorageService, "StorageRole:", StorageRole, \
+          "StorageVendor:", StorageVendor, "BondSlave2Mac:", BondSlave2Mac, "K8s:", K8s, \
+          "K8sCluster:", K8sCluster, "IP1:", IP1, "NETMASK:", NETMASK, "ipmi_ip:", ipmi_ip, "SVCTAG:", SVCTAG
+  }'
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------
+# NodeClass, StorageService
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^ipmi_ip=/) { ipmi_ip = substr($i, 9) }
+else if ($i ~ /^NodeClass=/) { NodeClass = substr($i, 11) }
+else if ($i ~ /^StorageService=/) { StorageService = substr($i, 16) }
+else if ($i ~ /^StorageConfig=/) { StorageConfig = substr($i, 15) }
+}
+print "IP1:", IP1, "ipmi_ip:", ipmi_ip, "NodeClass:", NodeClass, "StorageService:", StorageService, "StorageConfig:", StorageConfig
+}';  done
+
+
+------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#!/
+
+bin/bash
+
+# Read the list of namespaces from a file
+namespaces=()
+while IFS= read -r line; do
+  namespaces+=("$line")
+done < "name_spaces"
+
+# Read the list of pods from a file
+pods=()
+while IFS= read -r line; do
+  pods+=("$line")
+done < "pods"
+
+# Read the list of nodes from a file
+nodes=()
+while IFS= read -r line; do
+  nodes+=("$line")
+done < "hosts.txt"
+
+# Iterate over each namespace, pod, and node
+for namespace in "${namespaces[@]}"; do
+  for pod in "${pods[@]}"; do
+    for node in "${nodes[@]}"; do
+      kubectl -n "$namespace" get pods -o wide | grep "$pod" | grep "$node"
+    done
+  done
+done
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+-rw-r--r--. 1 mukkve7 40661 120 Jul  4 11:46 name_space
+-rw-r--r--. 1 mukkve7 40661 116 Jul  8 10:11 hosts.txt
+-rw-r--r--. 1 mukkve7 40661  71 Jul  8 10:23 pods
+while IFS= read -r namespace; do while IFS= read -r pod; do while IFS= read -r node; do kubectl -n "$namespace" get pods -o wide | grep "$pod" | grep "$node"; done < hosts.txt; done < pods; done < name_spaces
+---------------------------------------------------------------------------------------------
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+PXE boot
+==========
+
+
+
+
+
+
+
+
+
+
+kubectl -n platform-pxe exec -it deploy/pxe -c dhcpd-conf -- ansible-playbook /opt/playbook/dhcp-pxe/playbook-pxe-os-reinstall.yaml -l 10.214.31.1 
+
+
+
+
+
+
+Metallb:
+========
+First, get the node name from where the speaker-mxpg6 pod is running:
+kubectl --context twinsburg-ocp -n metallb-system get pod speaker-mxpg6 -o wide
+
+This will provide the node where the pod is scheduled. Then SSH into that node.
+SSH into the Node: ssh user@<node-ip>
+Step 2: Check the Network Interfaces
+Once inside the node, check if the Frontend (FE) network interface is up and working:
+# ip a | grep <fe-interface-name>
+	You can replace <fe-interface-name> with the specific FE interface in question (e.g., eth0 or eno1). Ensure that the interface is up and running.
+ip link show <fe-interface-name>
+
+If the interface is down or there's any issue, bring it up:
+sudo ip link set <fe-interface-name> up
+ip addr show <fe-interface-name>
+
+ip addr show
+
+
+systemctl status NetworkManager
+
+
+4. Checking MetalLB Speaker ConfigMap
+Sometimes issues occur due to incorrect configuration in MetalLB’s ConfigMap, especially around IP range allocations. Check the config:
+kubectl --context twinsburg-ocp -n metallb-system get configmap config -o yaml
+
+5. Check if MetalLB Can Reach the External LoadBalancer
+Use ping or curl to verify whether the speaker is able to reach the external resources or endpoints that it manages:
+kubectl --context twinsburg-ocp -n metallb-system exec -it speaker-mxpg6 -c speaker -- ping <external-ip>
+
+
+systemctl status NetworkManager
+
+
+
+kubectl --context twinsburg-ocp -n metallb-system logs speaker-mxpg6 --tail 500 -c speaker | grep error
+
+ip a | grep <fe-interface-name>
+sudo ip link set <fe-interface-name> up
+	
+	
+
+
+
+
+
+
+
+PASSWORD='venkEy($)8'
+for i in $(cat hosts.txt); do
+    echo "$i" && echo '--------'  && sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no mukkve7@$i 'dmesg -T | grep -i nic | tail -4  && last reboot | tail -4  '
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+======================================================================@@@@@@@@@@@@@@@@====================================================================
+1. NodeMissingFromK8s:
+=====================
+Description: Node has been deleted from the cluster, often due to prolonged unhealthiness.
+ Debug Steps:
+	Check node status:
+	  ssh in to the node 
+	# kubectl get nodes
+	  Node might deleted from cluster for node being unhealthy reason
+
+2. NodeNetworkBondingDegraded:
+=============================
+Description: Network bonding on the node is degraded, which could impact network reliability.
+	Debug Steps:
+	  ssh in to the node 	
+	  Verify bonding configuration:
+	#	cat /proc/net/bonding/bond0
+		Check network interface status:
+	#	ip link show
+		Inspect logs for errors:
+	#	dmesg -T | grep -i nic
+	
+3. NodeNetworkInterfaceFlapping
+===============================
+Description: Network interface is flapping (going up and down frequently).
+	Debug Steps:
+		Check interface status:
+	    ssh in to the node 	
+	#	cat /proc/net/bonding/bond0
+		Check network interface status:
+	#	ip link show
+		Inspect logs for errors:
+	#	dmesg -T | grep -i nic
+	#	journalctl -u network
+	
+4. KubeNodeNotReady
+====================
+Description: Node is in a NotReady state.
+	Debug Steps:
+	Inspect node status and reason:
+	# kubectl describe node <node-name>
+	Review Kubelet logs:
+	ssh in to the node	
+	# journalctl -u kubelet -f
+	Check for disk space, CPU, and memory constraints.
+	
+5. KubeNodeUnreachable
+======================
+Description: Node is unreachable, possibly due to network or hardware issues.
+	Debug Steps:
+	 Test connectivity:
+	 ssh in to the node	
+	# ping <node-IP>
+	If the node is not access via ssh get in to the IPMI and find the issue 
+	 Check network configurations and firewall rules.
+	 Review cloud provider or physical hardware status.
+	 
+6. KubeletHealthState
+=====================
+Description: Kubelet is unhealthy or not responding.
+	Debug Steps:
+	  Check Kubelet status:
+		ssh in to the node	
+		 #systemctl status kubelet 
+		 #Restart Kubelet if needed:
+		 
+		 #sudo systemctl restart kubelet
+		Review Kubelet logs for details.
+
+7. NodeCordoned
+================
+Description: Node is cordoned (no new pods will be scheduled).
+	Debug Steps:
+	Check cordon status:
+	Get in to the cluster 
+	#	kubectl get nodes | grep SchedulingDisabled
+	Uncordon the node if appropriate:
+	#	kubectl uncordon <node-name>
+	cordon the node if appropriate:
+	#	kubectl cordon <node-name>
+	
+8. NodeFilesystemAlmostOutOfSpace
+=================================
+Description: Filesystem on the node is nearly full.
+	Debug Steps:
+	Check disk usage:
+	ssh in to the node
+	#	df -h
+	Clear unnecessary logs or files. 
+	Consider resizing disk if using cloud infrastructure.
+	
+9. KubeJobFailed:
+=================
+Description: A Kubernetes job has failed.
+	Debug Steps:
+	Inspect the job status:
+	# kubectl -n name_space get jobs | grep <failed job>
+	# kubectl describe job <job-name>
+	Review logs for job-specific pods:
+	# kubectl logs <pod-name> --container <container-name>
+    # kubectl -n name_space delete job <job-name>
+	
+10. KubeDeploymentReplicasMismatch
+===============================
+Description: Deployment replicas count does not match the desired state.
+  Debug Steps:
+   Check deployment status:
+   # kubectl -n platform get deployments | grep  <deployment-name>
+   Inspect the events for errors:
+   #	kubectl -n platform describe deployment postgres
+   #	kubectl -n platform describe pods -l app=postgres,instance=postgres
+   #	kubectl -n platform logs <pod-name> 
+   #	kubectl -n platform get events 
+ 
+  
+11. KubeStatefulSetReplicasMismatch
+===================================
+Description: StatefulSet replicas count does not match the desired state.
+	Debug Steps:
+	 Check StatefulSet status:
+	 # kubectl -n openshift-monitoring get statefulsets 
+	 # kubectl -n openshift-monitoring describe statefulset vzdevops-haproxy-idn 
+	 # kubectl -n openshift-monitoring describe pods -l app=prometheus-k8s,instance=vzdevops-haproxy-idn 
+	 # kubectl -n openshift-monitoring logs <pod-name> 
+	 # kubectl -n openshift-monitoring get events 
+
+12. KubeContainerWaiting
+========================
+Description: Container is in a waiting state, often due to image pull issues or initialization delays.
+	Debug Steps:
+	   Check pod and container status:
+	   kubectl -n <name_space> get po -o wide  
+	   kubectl -n <name_space> describe pod <pod-name>
+	   Review container logs for waiting state reasons:
+	   kubectl -n <name_space> logs <pod-name> --container <container-name>
+
+13. KubePodNotReady
+===================
+Description: Pod is not in a ready state.
+	Debug Steps:
+	   Check pod and container status:
+	   kubectl -n <name_space> get po -o wide  
+	   kubectl -n <name_space> describe pod <pod-name>
+	   Review container logs for waiting state reasons:
+	   kubectl -n <name_space> logs <pod-name> --container <container-name>
+
+14. TargetDown
+==============
+Description: A target service in Prometheus is down.
+	Debug Steps:
+		Check the status of Prometheus targets:
+		bash
+		Copy code
+		curl -s http://localhost:9090/api/v1/targets
+		Inspect logs of the down service.
+		Verify network connectivity and service availability.
+15. PrometheusOperatorRejectedResources
+========================================
+Description: Prometheus operator has rejected certain resources.
+		Debug Steps:
+		Check Prometheus operator logs:
+		bash
+		Copy code
+		kubectl logs -l app=prometheus-operator
+		Validate configurations and manifests for errors.
+		
+16. ClusterOperatorDegraded
+===========================
+Description: A cluster operator is in a degraded state.
+Debug Steps:
+Check operator status:
+bash
+Copy code
+kubectl get co
+kubectl describe co <operator_name>
+Review logs for specific cluster operators.
+
+
+
+
+17: CsvAbnormalFailedOver2Min:
+==============================
+
+
+
+18. Pending CSR:
+==================
+Description: Node has pending Certificate Signing Requests (CSRs).
+	Debug Steps:
+		Check pending CSRs:
+			# kubectl get csr
+			# kubectl get csr|grep -i localhost|wc -l
+			# kubectl get csr|grep -i localhost|grep -i pending|awk '{print $1}' >/tmp/venkey
+			
+	The command retrieves pending CSRs, excludes "localhost," extracts names, and saves them to /tmp/venkey.
+	kubectl get csr|grep -v localhost|grep -i pending
+	kubectl get csr|grep -v localhost|grep -i pending|awk '{print $1}' >/tmp/venkey
+ 
+
+node-194-14.vcos.verizon.com 
+
+Approve the CSRs:
+#This command reads the CSR names from the file and approves each CSR using the the below command;
+for i in $(cat /tmp/venkey); do echo $i |xargs oc adm certificate approve; done
+
+#Approve the csr's 
+oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs oc adm certificate approve
+
+#Iterates through /tmp/venkey, describes CSRs, and extracts "Common Name" along with the hostname;
+for i in $(cat /tmp/venkey); do kubectl describe csr $i | grep ' Common Name: '; done
+
+
+
+Deny CSRs if needed:
+for i in $(cat /tmp/venkey); do echo $i |xargs oc adm certificate deny; done
+
+18. NodeHighNumberConntrackEntriesUsed
+======================================
+Check Node Conntrack Metrics
+Verify the current conntrack usage on the node.
+ # cat /proc/sys/net/netfilter/nf_conntrack_count
+ # cat /proc/sys/net/netfilter/nf_conntrack_max
+nf_conntrack_count: Current number of connection tracking entries.
+nf_conntrack_max: Maximum allowed conntrack entries.
+
+Look for logs related to dropped packets or conntrack issues.
+# dmesg -T | grep conntrack
+
+ # kubectl -n name_space top pods
+ # kubectl -n <namespace> describe pod <pod-name>
+ # kubectl -n <namespace> logs <pod-name> <container_name>
+ 
+
+    

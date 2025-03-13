@@ -1,0 +1,184 @@
+Wornking on VZ Cloud project: we actually the team of four members will manages platform operations across five data centers: 
+Arlington
+Twinsburg 
+Omaha
+Perryman
+Magellan
+
+Each DC consists of 4 clusters, that including one dedicated to platform services for configuration and system functionality.
+
+Our key tasks involve regularly monitoring nodes and Kube components troubleshooting to keep system stability. 
+
+When necessary, we raise JIRA tickets and assign them to the appropriate team members to resolve issues(disk replacement, clearing Unnecessary logs). 
+This is how we manage platform monitoring activities.
+
+We actually use Prometheus monitoring tool, which sends email alerts when any node or Kube component becomes unhealthy. Based on these alerts, we take prompt action to maintain system health.
+
+
+
+Verizon Cloud Project: Platform Operations
+
+Data Centers (5)
+
+- Arlington
+- Twinsburg
+- Omaha
+- Perryman
+- Magellan
+
+Clusters to the above Data Centers:
+
+- Platform svcs (dedicated to Configuration & System Functionality)
+- ocp1 (Applications host clusters)
+- ocp2 (Applications host clusters)
+- ocp3 (Applications host clusters)
+
+Key Tasks
+
+- Monitor Nodes & Kube Components
+- Troubleshoot to Maintain System Stability
+- Raise JIRA Tickets (when necessary)
+- Assign to appropriate team members
+    - Disk Replacement
+    - File System filling up (Clearing unnecessary logs)
+	- Switch issue / rack down
+
+Platform Monitoring Activities
+
+- Prometheus Monitoring Tool
+    - Email Alerts (when node/Kube component is unhealthy)
+    - Prompt Action (to maintain system health)
+
+Team Size:
+- 4 members
+
+
+
+
+
+
+
+
+
+
+
+
+
+====================================
+Datacenters(Arlington, Omaha, Twinsburg, Perryman, Magellan) nodes -> clusters (nodes which are from Datacenters) -> Monitoring clusters and nodes (using promethus tool. which sent email notifications)-> Capture firing alert's and take them into the spread sheet to clear and find the issues easily - > Troubleshoot the issues -> Create a Jira Issue for tracking the issue  
+
+ChatGPT said:
+ChatGPT
+Here's a refined flow diagram for Verizon Cloud Project: Platform Operations to represent the steps and relationships clearly:
+
+Diagram Elements
+
+Data Centers and Nodes:
+
+Data Centers: Arlington, Omaha, Twinsburg, Perryman, Magellan
+Each Data Center contains multiple Nodes that support the clusters.
+Clusters:
+
+Nodes are organized into Clusters within each data center, representing groups of platform services and applications.
+Monitoring:
+
+Prometheus Monitoring Tool continuously monitors clusters and nodes.
+Email Alerts are triggered when a node or Kubernetes component shows signs of failure or degradation.
+Alert Capture and Tracking:
+
+Alerts captured by Prometheus are documented in a Google Spreadsheet.
+This spreadsheet is used to track alerts, categorize issues, and prioritize troubleshooting.
+Troubleshooting Workflow:
+
+Identify and Troubleshoot the root cause of alerts, such as hardware failure or resource issues.
+Clear logs, replace disks, or resolve connectivity issues as needed.
+JIRA Issue Creation and Tracking:
+
+Create a JIRA Issue to document the issue, track its resolution, and assign it to team members if further action is needed.
+
+
+
+===============================================================@@@@@@@@@@@@@==========================================
+
+
+Verizon Cloud Project Platform Operations:
+
+1. Data Centers:
+
+Locations: Arlington, Omaha, Twinsburg, Perryman, Magellan
+Each data center contains Nodes organized into Clusters.
+2. Clusters (within each data center):
+
+Platform Services Cluster: For configuration and system functionality
+OCP1, OCP2, OCP3: Application host clusters
+Mgmt Cluster: Management cluster for overseeing platform and operational tasks
+3. Monitoring Clusters and Nodes:
+
+Prometheus Monitoring Tool:
+Constantly monitors nodes and clusters for health.
+Sends email alerts when a node or Kubernetes component is unhealthy.
+4. Alert Management and Tracking:
+
+Capture Alerts:
+Log alerts into a Google spreadsheet for visibility and easy tracking.
+Categorize alerts to streamline issue identification and resolution.
+5. Troubleshooting Process:
+
+Address and resolve issues based on alerts (e.g., disk replacement, log clearing, rack or switch issues).
+Work to maintain overall system stability.
+6. Issue Tracking with JIRA:
+
+If the alert requires extended attention or further tracking:
+Create a Jira Ticket to formally document and assign the issue to the team.
+Jira helps ensure structured resolution and accountability.
+7. Team Actions:
+
+The 4-member team coordinates on monitoring, troubleshooting, and task assignment based on each alert and Jira ticket.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for i in $(cat hosts.txt); do   flm | grep $i > log; cat log  | awk -F ',' '{
+for (i=1; i<=NF; i++) {
+if ($i ~ /^IP1=/) { IP1 = substr($i, 5) }
+else if ($i ~ /^NodeModel=/) { NodeModel = substr($i, 11) }
+}
+print "IP1:", IP1, "NodeModel:", NodeModel
+}';  done
+
+
+This shell script processes a list of hostnames found in hosts.txt
+It will extract specified details about each host (namely, IP1 and NodeModel...etc) from the output of the flm command.
+
+
+Process and Extract Data Using awk:
+cat log | awk -F ',' '{...}';
+The log file, which contains lines matching the hostname, is passed to awk, where: 
+The input is split by commas (-F ','), treating each comma-separated value as a field.
+
+Field Extraction:
+Each field ($i) is checked:
+If a field starts with IP1=, the value following = is extracted using substr($i, 5) and saved as IP1
+If a field starts with NodeModel=, the value following = is extracted using substr($i, 11) and saved as NodeModel.
+
+
+
+
+
+
+
+
+
+
+

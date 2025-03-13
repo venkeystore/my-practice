@@ -1,0 +1,321 @@
+ 
+ 
+ dmesg -T | grep -i nic
+ansible -m debug -a var=ipmi_ip -o 10.149.32.1
+
+To get metadata from provisioning servers.  10.66.30.1
+cat /etc/montana/config/nodemetadata.py|grep -i "'70','25'"  10.70.25.1
+
+Login into prov-server:
+1-Download the new image
+source <(docker run --rm ${REGISTRY_END_POINT}/montana/deploy-post-pxe:${DEPLOY_POST_PXE_ANSIBLE_TAG_VERSION:?} cat setup/setup_ansible_lib.sh)
+
+2-By running the below command that takes to /opt/montana/services/orchestration/ansible #
+
+deploy-post-pxe sh
+	* cd /hosts
+	* vi hosts
+
+3- Check the Application on the node. we can add multiple hosts by giving comma
+
+ansible -m shell -a 'echo "------------";for i in `docker ps -q`; do echo $i;docker inspect $i | grep -i MARATHON_APP_ID;done | grep MARATHON_APP_ID' $hosts
+
+ansible -m shell -a 'echo "------------";for i in `docker ps -q`; do echo $i;docker inspect $i | grep -i MARATHON_APP_ID;done | grep MARATHON_APP_ID && uptime' $hosts
+
+ansible -m shell -a ' cat /sys/class/dmi/id/bios_version' 10.69.10.1
+
+ansible -m debug -a var=ipmi_ip -o
+
+4- cd /hosts
+5- vi hosts
+
+6 - Place the rebooting nodes in
+Under reboot section.
+    ],
+    "vars": {
+      "setup_docker": true,
+      "INSTALL_PROMETHEUS_EXPORTERS": true,
+      "INSTALL_LOGGING_AGENTS": true
+    }
+  },
+  "all": {
+    "vars": {
+      "ansible_python_interpreter": "/opt/bin/python"
+    }
+  },
+  "prov": {
+    "vars": {
+      "ip": "10.13.66.1",
+      "type": "prov"
+    },
+    "hosts": [
+      "10.13.66.1"
+    ]
+  },
+  "reboot": {
+    "hosts": [
+ 10.27.91.1,10.27.91.1,10.27.91.1
+    ]
+  }
+}
+EOT
+
+7 - run the reboot playbook
+deploy-post-pxe ansible-playbook playbooks/platform/reboot-nodes.yml
+
+ansible -m shell -a ' cat /sys/class/dmi/id/bios_version && uptime ' 10.159.11.1,10.159.12.1,10.159.14.1,10.159.18.1,10.159.19.1,10.159.21.1,10.159.29.1
+
+
+
+
+
+
+
+
+
+
+deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!mesos,10.161.25.1,10.162.25.1,10.164.17.1,10.165.7.1' --skip-tags check_os_version -e serial=35
+
+
+to check what is running in the node:
+ansible -m shell-a 'docker ps && lsblk' -o $host
+
+1. we've to ping the node 
+2. add node in to pxe file.
+ devops@omaha-prov$ cd /opt/montana/services/orchestration/ansible/hosts$
+ 10.198.27.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+3. 3. Check the mapping file for the selected nodes, if there is no entry for selected nodes, we need to add the mapping file add as /dev/sda, for the mapping file we need a Montana access. a
+devops@omaha-prov /opt/montana/services/bootstrap/mapping $cat > 10.198.27.1
+/dev/sda
+
+4. Pxe booted the nodes to coresOS. and login as Montana with default password clean the 2 1 TB drives and wipe off the boot drive.
+password:
+u: montana
+p: ?monDev0ps^
+
+Laniakea@123
+
+$ deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!mesos,10.204.31.1' --skip-tags check_os_version
+
+
+5. clean the 2 1 TB drives and wipe off the boot drive.
+
+
+
+Boot drive 
+sudo wipefs /dev/sds
+offset               type
+----------------------------------------------------------------
+0x200                gpt   [partition table]
+
+
+DD the 1 TB data drives:
+sudo dd if=/dev/zero of=/dev/sdb bs=512 count=1
+
+5.Get the boot drive wwn number
+montana@localhost ~ $ ls -l /dev/disk/by-id/  | grep sds
+
+
+
+
+source <(docker run --rm ${REGISTRY_END_POINT}/montana/deploy-post-pxe:${DEPLOY_POST_PXE_ANSIBLE_TAG_VERSION:?} cat setup/setup_ansible_lib.sh)
+
+
+
+picking frm row 131-140 nodes
+
+10.204.31.1,10.204.33.1,10.204.35.1,10.204.5.1,10.204.7.1,10.204.9.1,10.205.29.1,10.205.31.1,10.205.33.1,10.205.35.1
+
+
+
+
+10.204.31.1 | UNREACHABLE!
+10.204.33.1 | UNREACHABLE!
+10.204.5.1 | UNREACHABLE!
+10.204.7.1 | UNREACHABLE!
+10.204.9.1 | UNREACHABLE!
+10.205.29.1 | SUCCESS => {"changed": false, "ping": "pong"}
+10.204.35.1 | SUCCESS => {"changed": false, "ping": "pong"}
+10.205.31.1 | UNREACHABLE!
+10.205.33.1 | UNREACHABLE!
+10.205.35.1 | UNREACHABLE!
+
+deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!mesos,10.205.37.1,10.205.39.1,10.205.41.1,10.205.43.1,10.205.45.1,10.205.47.1,10.206.29.1,10.206.31.1,10.206.33.1,10.206.35.1,10.206.37.1,10.206.39.1,10.206.41.1,10.206.43.1,10.206.45.1,10.206.47.1,10.207.29.1,10.207.31.1,10.207.33.1,10.207.35.1
+' --skip-tags check_os_version
+
+deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!mesos,
+' --skip-tags check_os_version
+
+cat 10.205.37.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.155"}
+cat 10.205.39.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.156"}
+cat 10.205.41.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.157"}
+cat 10.205.43.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.158"}
+cat 10.205.45.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.159"}
+cat 10.205.47.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.160"}
+cat 10.206.29.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.185"}
+cat 10.206.31.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.186"}
+cat 10.206.33.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.187"}
+cat 10.206.35.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.188"}
+pending
+10.205.39.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 
+10.205.41.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 
+10.206.29.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 
+10.206.31.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 
+10.206.33.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 
+10.206.35.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 
+10.206.37.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.189"}
+10.206.39.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.190"}
+10.206.41.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.191"}
+10.206.43.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.192"}
+10.206.45.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.193"}
+10.206.47.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.194"}
+10.207.29.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.219"}
+10.207.31.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.220"}
+10.207.33.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.221"}
+10.207.35.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 		| SUCCESS => {    "changed": false,     "ipmi_ip": "140.223.65.222"}
+
+10.205.37.1-10.205.37.1-done           : ok=11   changed=8    unreachable=0    failed=1
+10.205.39.1-10.205.39.1-denied                : ok=0    changed=0    unreachable=0    failed=1
+10.205.41.1-10.205.41.1-denied                : ok=0    changed=0    unreachable=0    failed=1
+10.205.43.1-10.205.43.1-done-not wiped              : ok=4    changed=1    unreachable=0    failed=1
+10.205.45.1-10.205.45.1-done               : ok=8    changed=5    unreachable=1    failed=1
+10.205.47.1-10.205.47.1-done                : ok=8    changed=5    unreachable=1    failed=1
+10.206.29.1-10.206.29.1-denied               : ok=0    changed=0    unreachable=0    failed=1
+10.206.31.1-10.206.31.1-denied                : ok=0    changed=0    unreachable=0    failed=1
+10.206.33.1-10.206.33.1-denied                : ok=0    changed=0    unreachable=0    failed=1
+10.206.35.1-10.206.35.1-denied
+
+wrong-credentials:
+10.205.37.1 
+
+
+10.204.31.1	/dev/sda;wwn-0x5001b444a46febfc 
+10.204.33.1	/dev/sda;wwn-0x5001b44f19905b8b 
+10.204.35.1	/dev/sda;wwn-0x5001b444a465d5e8 
+10.204.5.1	/dev/sda;wwn-0x5001b44f19905b97 
+10.204.7.1	/dev/sda;wwn-0x5001b44f19905ea7
+10.204.9.1	/dev/sda;wwn-0x5001b44f19905bdd 
+10.205.29.1	/dev/sda;wwn-0x5001b44f19905d0e
+10.205.31.1	/dev/sda;wwn-0x5001b44f19905d55 
+
+
+
+cat /etc/montana/config/nodemetadata.py|grep -i "'204','33'"
+
+10.204.5.1,10.204.7.1,10.204.9.1,10.205.29.1,10.205.33.1,10.205.35.1
+
+
+10.204.31.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+10.204.33.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+10.204.35.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+10.204.5.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0 
+10.204.7.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+10.204.9.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+10.205.29.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+10.205.31.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+10.205.33.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+10.205.35.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+
+pxe
+ /opt/montana/services/orchestration/ansible/hosts$ 
+10.198.27.1 pxe_bootloader_path=/coreos-noinstall/pxelinux.0
+
+
+3. Check the mapping file for the selected nodes, if there is no entry for selected nodes, we need to add the mapping file add as /dev/sda, for the mapping file we need a Montana access. a
+devops@omaha-prov /opt/montana/services/bootstrap/mapping $  
+cat 10.198.27.1
+/dev/sda
+
+
+PXE-boot:
+deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!mesos,10.204.31.1' --skip-tags check_os_version
+
+
+deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!mesos,10.204.31.1' --skip-tags check_os_version
+
+
+deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!nonmesos,!rhel,10.134.11.1,10.139.5.1,10.140.17.1' --skip-tags check_os_version,drain_mesos_tasks,marker_file
+
+deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!nonmesos,!rhel,10.134.11.1,10.139.5.1,10.140.17.1' --skip-tags check_os_version,drain_mesos_tasks,marker_file
+
+deploy-post-pxe ansible-playbook playbooks/deploy/pxe-os-reinstall.yml -l '!control,!mesos,10.134.11.1,10.139.5.1,10.140.17.1' --skip-tags check_os_version
+
+deploy-post-pxe ansible-playbook playbooks/deploy/post-pxe-setup.yml -l 10.140.17.1
+
+
+To delete 1TB drives:
+sudo dd if=/dev/zero of=/dev/sda
+
+To wipe the  boot disk using:
+ sudo wipefs /dev/bootdisk
+ 
+ 
+
+cat /etc/montana/config/nodemetadata.py | grep  10.134.11.1
+cat /etc/montana/config/nodemetadata.py | grep  10.139.5.1
+cat /etc/montana/config/nodemetadata.py | grep  10.140.17.1
+
+
+
+ 
+ ?monDevOps^
+ 
+Here is the process for updating the docker errata on the below Arlington nodes.
+
+1. Drain and Cordon the node before applying errata,
+     kubectl drain <node> --ignore-daemonsets
+   kubectl cordon <node>
+
+2. Run the below source
+    source <(docker run --rm ${REGISTRY_END_POINT}/montana/deploy-post-pxe:${DEPLOY_POST_PXE_ANSIBLE_TAG_VERSION:?} cat setup/setup_ansible_lib.sh)
+deploy-post-pxe ansible-playbook playbooks/upgrade/apply-errata.yml -l <nodeIP>
+
+
+3. after applying the errata check the kernel and docker version
+
+
+
+  [vzcloud@node-44a842164f19 ~]$ yum list installed  | grep kernel
+
+kernel.x86_64                    3.10.0-1160.21.1.el7      @lk-redhat-errata/7.6
+
+kernel.x86_64                    3.10.0-1160.42.2.el7      @rhel-7-server-rpms
+
+kernel-devel.x86_64              3.10.0-1160.21.1.el7      @rhel-7-server-rpms
+
+kernel-devel.x86_64              3.10.0-1160.42.2.el7      @rhel-7-server-rpms
+
+kernel-tools.x86_64              3.10.0-1160.42.2.el7      @rhel-7-server-rpms
+
+kernel-tools-libs.x86_64         3.10.0-1160.42.2.el7      @rhel-7-server-rpms
+
+
+
+[vzcloud@node-44a842164f19 ~]$ docker -v
+
+Docker version 20.10.7, build f0df350
+
+
+4. Reboot the nodes using
+  deploy-post-pxe ansible -m reboot -b <node ip>
+5. uncordon the node after rebooting the node.
+   kubectl uncordon <node>
+
+
+
+     kubectl drain <node> --ignore-daemonsets
+   kubectl cordon <node>
+
+
+
+unset SSH_AUTH_SOCK
+
+source <(docker run --rm ${REGISTRY_END_POINT}/montana/deploy-post-pxe:${DEPLOY_POST_PXE_ANSIBLE_TAG_VERSION:?} cat setup/setup_ansible_lib.sh)
+    
+deploy-post-pxe ansible -m reboot -b <node ip>
+
+Latest Kernel: 3.10.0-1160.53.1.el7.x86_64
+
+[montana@node-44a84216d797 ~]$ cat /sys/class/dmi/id/bios_version
+
+2.14.0

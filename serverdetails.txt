@@ -1,0 +1,52 @@
+perryme--dc10
+twinsburg-dc11-dc12
+arlington-dc13
+
+Provisioning Servers:
+=====================
+Twinsburg: ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.0.67" devops@10.13.66.1
+Arligton:  ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.0.67" devops@10.6.33.1
+Perryman: ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.0.67" devops@10.136.33.1
+omaha:    ssh -i  id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.0.67" devops@10.212.33.1
+irving: ssh  -i id_rsa -o ProxyCommand="ssh -W %h:%p ssreportal@198.159.192.143" devops@10.200.1.1 pass:changeit
+tampa:  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p devops@10.75.100.49" devops@10.75.100.50
+Ewalukauna:  ssh -i id_rsa  -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.0.67" devops@10.64.33.1
+Mellagan:  ssh -i id_rsa  -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.0.67" devops@10.161.33.1
+Rocklin:  ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p mukkve7@140.223.0.67" devops@10.69.33.1
+Tampa: ssh -i id_rsa -o ProxyCommand="ssh -W %h:%p devops@10.75.100.49" devops@10.75.100.50
+Tampa : 10.75.100.50(provisioning server ip)
+Tampa-jumpserver: 10.75.100.49
+
+
+
+
+burlington:
+===========
+ssh montana@198.159.138.250
+pass:Laniakea@123
+
+twinsburg-dit:
+===============
+ssh montana@140.223.87.250
+pass:Laniakea@123
+
+
+ansible -m debug -a var=ipmi_ip -o 10.85.34.1
+
+To get metadata from provisioning servers. 10.153.11.1
+cat /etc/montana/config/nodemetadata.py|grep -i "'85','34'"
+
+
+To download key:
+----------------
+curl http://199.219.37.214/devops_prod/admin/ssh-retrieve.php?file=..%2Fsigned-keys%2Fvenkateswara.reddy.mukkamalla%40in.verizon.com%2F.ssh%2Fid_rsa-cert.pub > ~/.ssh/id_rsa-cert.pub
+
+curl http://199.219.37.214/devops_prod/admin/ssh-retrieve.php?file=..%2Fsigned-keys%2Fvenkateswara.reddy.mukkamalla%40in.verizon.com%2F.ssh%2Fid_rsa-cert.pub > "C:\Users\mukkve7\Desktop\dcconnect\id_rsa-cert.pub"  
+
+
+
+
+
+
+
+

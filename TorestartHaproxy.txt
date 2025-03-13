@@ -1,0 +1,106 @@
+To restart haproxy:
+ ansible -m shell -a 'docker exec $(docker ps | grep -i tcp-ha | awk '"'"'{print $1}'"'"') ls -ltrh /etc/haproxy/haproxy.cfg && date' $host_anil1
+ ansible -m shell -a 'sudo systemctl restrt marathon-haproxy.service' -b $host_anil1
+ ansible -m shell -a 'sudo systemctl restart marathon-haproxy.service' -b $host_anil1
+ ansible -m shell -a 'docker exec $(docker ps | grep -i tcp-ha | awk '"'"'{print $1}'"'"') ls -ltrh /etc/haproxy/haproxy.cfg && date' $host_anil1
+
+
+
+can someone pls look into this issue
+STG2 HAPROXY Config issue 2021-01-25-10
+10.65.22.1 ERROR CONNECTING
+10.65.26.1 ERROR CONNECTING
+10.66.24.1 ERROR CONNECTING
+10.66.28.1 ERROR CONNECTING
+10.67.28.1 ERROR CONNECTING
+10.67.30.1 ERROR CONNECTING
+10.68.24.1 ERROR CONNECTING
+10.68.28.1 ERROR CONNECTING
+10.69.24.1 ERROR CONNECTING
+10.69.28.1 ERROR CONNECTING
+10.74.24.1 ERROR CONNECTING
+10.74.28.1 ERROR CONNECTING
+10.75.24.1 ERROR CONNECTING
+10.75.28.1 ERROR CONNECTING
+10.79.26.1 ERROR CONNECTING
+10.79.28.1 ERROR CONNECTING
+10.80.26.1 ERROR CONNECTING
+10.80.28.1 ERROR CONNECTING
+10.81.24.1 ERROR CONNECTING
+10.81.28.1 ERROR CONNECTING
+10.82.24.1 ERROR CONNECTING
+10.82.28.1 ERROR CONNECTING
+10.83.24.1 ERROR CONNECTING
+10.83.28.1 ERROR CONNECTING
+10.84.24.1 ERROR CONNECTING
+
+
+
+ ansible -m shell -a 'docker exec $(docker ps | grep -i tcp-ha | awk '"'"'{print $1}'"'"') ls -ltrh /etc/haproxy/haproxy.cfg && date' $host_anil1
+ ansible -m shell -a 'sudo systemctl restrt marathon-haproxy.service' -b $host_anil1
+ ansible -m shell -a 'sudo systemctl restart marathon-haproxy.service' -b $host_anil1
+ ansible -m shell -a 'docker exec $(docker ps | grep -i tcp-ha | awk '"'"'{print $1}'"'"') ls -ltrh /etc/haproxy/haproxy.cfg && date' $host_anil1
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ plz check now
+10.81.24.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:30 UTC 2021
+10.81.28.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:30 UTC 2021
+10.82.24.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:31 UTC 2021
+10.83.24.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:31 UTC 2021
+10.82.28.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:31 UTC 2021
+10.83.28.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:31 UTC 2021
+10.84.24.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:32 UTC 2021
+10.68.24.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:27 UTC 2021
+10.69.24.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:27 UTC 2021
+10.69.28.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:27 UTC 2021
+10.68.28.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:28 UTC 2021
+10.74.24.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:29 UTC 2021
+10.74.28.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:29 UTC 2021
+10.75.28.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:29 UTC 2021
+10.75.24.1 | SUCCESS | rc=0 >>
+-rw-r--r--. 1 root root 21K Jan 25 10:47 /etc/haproxy/haproxy.cfg
+Mon Jan 25 10:48:29 UTC 2021
+
+
+Send a message
+

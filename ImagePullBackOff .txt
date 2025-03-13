@@ -1,0 +1,62 @@
+Arlington:
+ 
+ *dv-547df7d958-p9j7t                                                ●                2/3                                      0 ImagePullBackOff                 172.18.149.77                  10.16.32.1                  98m *
+ 
+ 
+ *dv-547df7d958-tlbg7                                                ●                2/3                                      0 ImagePullBackOff                 172.18.37.150                  10.22.21.1                  104m *
+
+
+
+
+when you run a docker pull in the node it connects to artifactory running in the arlington-platformsvcs cluster
+
+10.16.34.1
+er-jfrog-artifactory-0 - artifactory
+
+
+[montana@node-44a84219bd85 ~]$ sudo docker pull vzcloud.er.svcs.verizon.com/vzcloud/vc-ont-dv:4.9.2
+Error response from daemon: received unexpected HTTP status: 503 Service Temporarily Unavailable
+
+kubectl -n platform edit configmap coredns
+
+Comment out the "import kubernetes" and "rewrite name ..." lines and add the "forward" line to each section (except for gr.svcs.verizon.com...no need to change that one)
+
+er.svcs.verizon.com ==> Need to chage (ingress-controller.conf)
+gr.svcs.verizon.com ==> no need to cange (artifactory-gr.conf)
+
+
+[FIRING:1] KubeNodeNotReady arlington-platformsvcs warning (Ready kube-state-metrics http 172.28.75.233:8080 kube-state-metrics cattle-monitoring-system 10.16.34.1 rancher-monitoring-kube-state-metrics-84d89c5477-sdqjv cattle-monitoring-system/rancher-monitoring-prometheus rancher-monitoring-kube-state-metrics true)
+6:13 AM (14 hours ago)
+
+[1] Firing
+Labels
+alertname = KubeNodeNotReady
+cluster = arlington-platformsvcs
+condition = Ready
+container = kube-state-metrics
+endpoint = http
+instance = 172.28.75.233:8080
+job = kube-state-metrics
+namespace = cattle-monitoring-system
+node = 10.16.34.1
+
+10.16.34.1
+arlington-platformsvcs cluster
+
+
+[montana@node-44a84219bd85 ~]$ sudo docker pull vzcloud.er.svcs.verizon.com/vzcloud/vc-ont-dv:4.9.2
+4.9.2: Pulling from vzcloud/vc-ont-dv
+Digest: sha256:4e12d892f68297395347660aa9ed1241b35b4529c5c702569be64d20df2b55b0
+Status: Image is up to date for vzcloud.er.svcs.verizon.com/vzcloud/vc-ont-dv:4.9.2
+vzcloud.er.svcs.verizon.com/vzcloud/vc-ont-dv:4.9.2
+
+
+
+Observing 10.16.34.1 node was down in the arlington-platformsvcs cluster. After power cycle the 10.16.34.1 node artifactory had come up and then image was able pulling in both 10.16.32.1, 10.22.21.1
+
+ dv-547df7d958-mpvl9                                                ●                3/3                                      0 Running                          172.18.149.78                  10.16.32.1                  6h26m
+ 
+ dv-547df7d958-tlbg7                                                ●                3/3                                      0 Running                          172.18.37.150                  10.22.21.1                  14h
+ 
+ 
+

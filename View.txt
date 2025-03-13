@@ -1,0 +1,13 @@
+devops@perryman-prov ~ $ ansible -m shell -a 'lsblk | grep cass' -o 10.129.10.1,10.129.11.1,10.129.13.1,10.129.14.1,10.129.15.1,10.129.16.1,10.129.17.1,10.129.18.1,10.129.19.1
+10.129.13.1 | SUCCESS | rc=0 | (stdout) ??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd\n??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd
+10.129.15.1 | SUCCESS | rc=0 | (stdout) ??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd\n??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd
+10.129.10.1 | FAILED! => {"changed": true, "cmd": "lsblk | grep cass", "delta": "0:00:00.023063", "end": "2022-06-14 03:55:18.570188", "failed": true, "rc": 1, "start": "2022-06-14 03:55:18.547125", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+10.129.11.1 | FAILED! => {"changed": true, "cmd": "lsblk | grep cass", "delta": "0:00:00.013309", "end": "2022-06-14 03:55:18.571939", "failed": true, "rc": 1, "start": "2022-06-14 03:55:18.558630", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+10.129.14.1 | SUCCESS | rc=0 | (stdout) ??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd\n??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd
+10.129.16.1 | SUCCESS | rc=0 | (stdout) ??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd\n??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd
+10.129.17.1 | SUCCESS | rc=0 | (stdout) ??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd\n??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd
+10.129.19.1 | FAILED! => {"changed": true, "cmd": "lsblk | grep cass", "delta": "0:00:00.012434", "end": "2022-06-14 03:55:19.796516", "failed": true, "rc": 1, "start": "2022-06-14 03:55:19.784082", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+10.129.18.1 | SUCCESS | rc=0 | (stdout) ??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd\n??VGSSD00-cassandra 253:1    0 743.9G  0 lvm  /pv/vzcloud-stg2/cass-sal/ssd
+
+
+vzcloud-dc10
