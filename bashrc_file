@@ -1,0 +1,56 @@
+#OC login
+alias arlington-ocp='oc login -u mukkve7 --server=https://api.ocp.arlington.svcs.verizon.com:6443'
+alias arlington-ocp2='oc login -u mukkve7 --server=https://api.ocp2.arlington.svcs.verizon.com:6443'
+alias arlington-platformsvcs='oc login -u mukkve7 --server=https://api.platformsvcs.arlington.svcs.verizon.com:6443'
+
+alias twinsburg-ocp='oc login -u mukkve7 --server=https://api.ocp.twinsburg.svcs.verizon.com:443'
+alias twinsburg-ocp2='oc login -u mukkve7 --server=https://api.ocp2.twinsburg.svcs.verizon.com:443'
+alias twinsburg-platformsvcs='oc login -u mukkve7 --server=https://api.platformsvcs.twinsburg.svcs.verizon.com:443'
+
+alias omaha-ocp1='oc login -u mukkve7 --server=https://api.ocp1.omaha.svcs.verizon.com:443'
+alias omaha-ocp2='oc login -u mukkve7 --server=https://api.ocp2.omaha.svcs.verizon.com:443'
+alias omaha-platformsvcs='oc login -u mukkve7 --server=https://api.platformsvcs.omaha.svcs.verizon.com:443'
+alias omaha-ocp='oc login -u mukkve7 --server=https://api.ocp.omaha.svcs.verizon.com:443'
+
+alias perryman-ocp1='oc login -u mukkve7 --server=https://api.ocp1.perryman.svcs.verizon.com:6443'
+alias perryman-ocp2='oc login -u mukkve7 --server=https://api.ocp2.perryman.svcs.verizon.com:443'
+alias perryman-ocp-stg='oc login -u mukkve7 --server=https://api.ocp-stg.perryman.svcs.verizon.com:443'
+alias perryman-mgmt='oc login -u mukkve7 --server=https://api.mgmt.perryman.svcs.verizon.com:443'
+alias perryman-prod='oc login -u mukkve7 --server=https://api.prod.perryman.svcs.verizon.com:443'
+alias perryman-platformsvcs='oc login -u mukkve7 --server=https://api.platformsvcs.perryman.svcs.verizon.com:443'
+
+alias magellan-ocp1='oc login -u mukkve7 --server=https://api.ocp1.magellan.svcs.verizon.com:443'
+alias magellan-ocp2='oc login -u mukkve7 --server=https://api.ocp2.magellan.svcs.verizon.com:443'
+alias magellan-ocp3='oc login -u mukkve7 --server=https://api.ocp3.magellan.svcs.verizon.com:443'
+alias magellan-platformsvcs='oc login -u mukkve7 --server=https://api.platformsvcs.magellan.svcs.verizon.com:443'
+alias node_status='sh node_status.sh'
+alias app_list='sh app_list.sh'
+alias KubeContainerWaiting='sh check_pods.sh'
+alias KubePodNotReady='sh check_pods.sh'
+alias NodeHasIntegrityFailure='sh NodeHasIntegrityFailure.sh'
+
+
+
+
+### sh app_list.sh file containes :::
+read -p "Name_Space:" name_space
+read -p "Pod_Name:" pod_name
+#pod_name="group-sync-operator-controller-manager-f868bd88f-m8vvj" # Replace with your actual pod name
+containers=$(kubectl -n $name_space get pod "$pod_name" -o jsonpath='{.spec.containers[*].name}')
+container_count=1
+for container in $containers; do
+  echo "Container $container_count: $container"
+  ((container_count++))
+done
+
+
+#### sh check_pods.sh  :::::
+read -p "Name_Space:" name_space
+#read -p "Pod_Name:" pod_name
+for i in $(cat pods); do
+  node_name=$(kubectl -n $name_space get pods -o wide | grep $i | awk -v RS=" "  '{print $0}' | grep '.vcos.verizon.com')
+  node_status=$(kubectl get nodes | grep $node_name | awk '{print $2}')
+  echo "$(kubectl -n $name_space get pods -o wide | grep $i)   $node_status"
+done
+
+
