@@ -1,0 +1,16 @@
+DaemonSet:
+==========
+A DaemonSet in Kubernetes ensures that a specific Pod runs on every node (or selected nodes) in a cluster. 
+It is used for logging, monitoring, networking, security, storage, and system maintenance tasks. 
+Examples include Prometheus Node Exporter, Fluentd, Falco, and Calico. 
+DaemonSets automatically deploy and manage these essential services across all required nodes. 🚀
+
+In mysystem i used for system maintenance/manageing by deploying the NVIDIA Container Toolkit on GPU-enabled nodes. 
+It ensures that required GPU runtime components are available across all nodes that support NVIDIA GPU workloads in Kubernetes.
+
+
+The NVIDIA Container Toolkit enables GPU support in containers by providing necessary runtime components for Kubernetes and Docker. 
+GPU-enabled nodes are Kubernetes worker nodes equipped with NVIDIA GPUs, allowing accelerated computing for AI, ML, and HPC workloads by offloading processing tasks from CPUs to GPUs for improved performance. 🚀
+
+Without a **DaemonSet**, essential node-level services like **logging, monitoring, networking, security, and GPU management** won't run automatically on each node, 
+requiring manual Pod deployment, leading to inconsistent configurations and increased operational complexity. 🚀
